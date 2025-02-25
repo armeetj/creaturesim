@@ -102,7 +102,8 @@ int main() {
         // Update camera to follow selected creature
         if (selectedCreature) {
             Vector2 pos = selectedCreature->GetPosition();
-            camera.target = Vector2Lerp(camera.target, pos, 0.1f);
+            camera.target.x = Lerp(camera.target.x, pos.x, 0.1f);
+            camera.target.y = Lerp(camera.target.y, pos.y, 0.1f);
         }
 
         accumulator += GetFrameTime();
