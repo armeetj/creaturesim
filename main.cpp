@@ -334,6 +334,23 @@ int main() {
     DrawText(TextFormat("Zoom: %.2fx", camera.zoom), 10, 50, 20, WHITE);
     DrawText(TextFormat("Sim Speed: %.2fx", simulationSpeed), 10, 70, 20, DARKGRAY);
 
+    // Draw keybinds
+    const int KEYBIND_Y = GetScreenHeight() - 250;
+    const int KEYBIND_X = 10;
+    const int KEYBIND_LINE_HEIGHT = 20;
+    const int KEYBIND_FONT_SIZE = 15;
+    Color keybindColor = LIGHTGRAY;
+
+    DrawText("KEYBINDS:", KEYBIND_X, KEYBIND_Y, KEYBIND_FONT_SIZE + 2, YELLOW);
+    DrawText("SPACE: Reset Camera", KEYBIND_X, KEYBIND_Y + KEYBIND_LINE_HEIGHT, KEYBIND_FONT_SIZE, keybindColor);
+    DrawText("F: Toggle Fullscreen", KEYBIND_X, KEYBIND_Y + KEYBIND_LINE_HEIGHT * 2, KEYBIND_FONT_SIZE, keybindColor);
+    DrawText("Mouse Wheel: Zoom", KEYBIND_X, KEYBIND_Y + KEYBIND_LINE_HEIGHT * 3, KEYBIND_FONT_SIZE, keybindColor);
+    DrawText("Middle Mouse: Pan", KEYBIND_X, KEYBIND_Y + KEYBIND_LINE_HEIGHT * 4, KEYBIND_FONT_SIZE, keybindColor);
+    DrawText("Left/Right: Select Creature", KEYBIND_X, KEYBIND_Y + KEYBIND_LINE_HEIGHT * 5, KEYBIND_FONT_SIZE, keybindColor);
+    DrawText("1-9: Select Top Creatures", KEYBIND_X, KEYBIND_Y + KEYBIND_LINE_HEIGHT * 6, KEYBIND_FONT_SIZE, keybindColor);
+    DrawText("UP/DOWN: Change Sim Speed", KEYBIND_X, KEYBIND_Y + KEYBIND_LINE_HEIGHT * 7, KEYBIND_FONT_SIZE, keybindColor);
+    DrawText("R: Reset Sim Speed", KEYBIND_X, KEYBIND_Y + KEYBIND_LINE_HEIGHT * 8, KEYBIND_FONT_SIZE, keybindColor);
+
     // Sort creatures by age
     std::vector<std::reference_wrapper<const Creature>> sorted_creatures(
         creatures.begin(), creatures.end());
