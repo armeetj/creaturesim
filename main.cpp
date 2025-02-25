@@ -115,10 +115,13 @@ int main() {
             float dx = pos.x - camera.target.x;
             float dy = pos.y - camera.target.y;
             float dist = sqrt(dx*dx + dy*dy);
-            float speed = Clamp(dist / 500.0f, 0.02f, 0.1f);  // Faster when far, slower when close
+            // Smoother camera movement
+            float targetSpeed = Clamp(dist / 1000.0f, 0.005f, 0.05f);
+            static float currentSpeed = targetSpeed;
+            currentSpeed = Lerp(currentSpeed, targetSpeed, 0.1f);
             
-            camera.target.x = Lerp(camera.target.x, pos.x, speed);
-            camera.target.y = Lerp(camera.target.y, pos.y, speed);
+            camera.target.x = Lerp(camera.target.x, pos.x, currentSpeed);
+            camera.target.y = Lerp(camera.target.y, pos.y, currentSpeed);
         }
 
         accumulator += GetFrameTime();
@@ -204,11 +207,11 @@ int main() {
                     BOARD_PADDING + 5, 
                     20, YELLOW);
                     
-            // Sort creatures by health + energy
+            // Sort creatures by age
             std::vector<std::reference_wrapper<const Creature>> sorted_creatures(creatures.begin(), creatures.end());
             std::sort(sorted_creatures.begin(), sorted_creatures.end(),
                      [](const Creature& a, const Creature& b) {
-                         return (a.GetHealth() + a.GetEnergy()) > (b.GetHealth() + b.GetEnergy());
+                         return a.GetAge() > b.GetAge();
                      });
             
             // Show top 3

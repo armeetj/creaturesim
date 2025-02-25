@@ -27,6 +27,11 @@ public:
     float GetEnergy() const { return energy; }
     void SetSelected(bool select) { selected = select; }
     bool IsSelected() const { return selected; }
+    float GetAge() const { return age; }
+    float GetStrength() const { return strength; }
+    float GetSpeed() const { return speed; }
+    float GetMetabolism() const { return metabolism; }
+    bool IsMale() const { return isMale; }
     
 private:
     Vector2 position;

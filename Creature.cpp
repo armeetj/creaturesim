@@ -97,8 +97,55 @@ void Creature::UpdateState(const std::vector<Creature>& others) {
         // Very low health is an emergency
         state = CreatureState::SICK;
     } else if (energy > Constants::MATING_ENERGY && age > Constants::MATING_AGE) {
-        // Mating is high priority when healthy and mature
-        state = CreatureState::MATING;
+        // Check for nearby potential mates
+        for (const auto& other : others) {
+            if (&other != this && 
+                other.GetEnergy() > Constants::MATING_ENERGY && 
+                other.GetAge() > Constants::MATING_AGE &&
+                other.IsMale() != isMale) {  // Must be opposite sex
+                
+                Vector2 otherPos = other.GetPosition();
+                float dx = position.x - otherPos.x;
+                float dy = position.y - otherPos.y;
+                float dist = sqrt(dx*dx + dy*dy);
+                
+                if (dist < size * 3) {  // Close enough to mate
+                    // Create new creature with mixed traits
+                    Vector2 newPos = {
+                        (position.x + otherPos.x) / 2,
+                        (position.y + otherPos.y) / 2
+                    };
+                    
+                    // Mix parents' traits with some variation
+                    float mixStrength = (strength + other.GetStrength()) / 2;
+                    float mixSpeed = (speed + other.GetSpeed()) / 2;
+                    float mixMetabolism = (metabolism + other.GetMetabolism()) / 2;
+                    
+                    // Add some random variation (-10% to +10%)
+                    mixStrength *= (1.0f + (GetRandomValue(-10, 10) / 100.0f));
+                    mixSpeed *= (1.0f + (GetRandomValue(-10, 10) / 100.0f));
+                    mixMetabolism *= (1.0f + (GetRandomValue(-10, 10) / 100.0f));
+                    
+                    // Clamp values
+                    mixStrength = Clamp(mixStrength, Constants::MIN_STRENGTH, Constants::MAX_STRENGTH);
+                    mixSpeed = Clamp(mixSpeed, Constants::MIN_SPEED, Constants::MAX_SPEED);
+                    mixMetabolism = Clamp(mixMetabolism, Constants::MIN_METABOLISM, Constants::MAX_METABOLISM);
+                    
+                    // Create new creature
+                    creatures.emplace_back(newPos, size);
+                    auto& child = creatures.back();
+                    child.strength = mixStrength;
+                    child.speed = mixSpeed;
+                    child.metabolism = mixMetabolism;
+                    
+                    // Reset energy after reproduction
+                    energy *= 0.7f;  // Cost of reproduction
+                    
+                    state = CreatureState::MATING;
+                    break;
+                }
+            }
+        }
     } else if (health < Constants::LOW_HEALTH) {
         // Rest when somewhat injured
         state = CreatureState::SICK;
@@ -183,7 +230,7 @@ void Creature::Draw() const {
         default: stateText = "Unknown";
     }
     
-    DrawText(TextFormat("%s\n(%s)", name.c_str(), stateText),
+    DrawText(TextFormat("%s [%.1fs]\n(%s)", name.c_str(), age, stateText),
              position.x - size, position.y - size - 40, 10, WHITE);
 
     // Draw creature body
