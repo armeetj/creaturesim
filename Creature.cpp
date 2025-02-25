@@ -182,22 +182,27 @@ void Creature::Draw() const {
         default: stateText = "Unknown";
     }
     
-    DrawText(TextFormat("%s %s\nE:%.0f H:%.0f\nStr:%.0f Spd:%.1f Met:%.1f", 
-             isMale ? "♂" : "♀", stateText, 
-             energy, health,
-             strength, speed, metabolism),
-             position.x - size, position.y - size - 40, 10, WHITE);
+    DrawText(TextFormat("%s %s", isMale ? "♂" : "♀", stateText),
+             position.x - size, position.y - size - 30, 10, WHITE);
 
     // Draw creature body
     DrawPoly(position, isMale ? 3 : 6, size, rotation + 90.0f, color);
     
-    // Draw health bar
+    // Draw health bar and value
     DrawRectangle(position.x - size, position.y - size - 10, 
                   size * 2 * (health/100.0f), 4, RED);
+    DrawText(TextFormat("H:%.0f", health),
+             position.x + size + 2, position.y - size - 12, 8, RED);
     
-    // Draw energy bar
+    // Draw energy bar and value
     DrawRectangle(position.x - size, position.y - size - 6, 
                   size * 2 * (energy/100.0f), 4, YELLOW);
+    DrawText(TextFormat("E:%.0f", energy),
+             position.x + size + 2, position.y - size - 8, 8, YELLOW);
+
+    // Draw attributes in smaller text
+    DrawText(TextFormat("S:%.0f >%.1f M:%.1f", strength, speed, metabolism),
+             position.x - size, position.y - size - 18, 8, WHITE);
     
     // Draw strength indicator (outline thickness)
     DrawPolyLines(position, isMale ? 3 : 6, size, rotation + 90.0f, 
