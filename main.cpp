@@ -15,6 +15,9 @@ int main() {
     camera.offset = {screenWidth/2.0f, screenHeight/2.0f};
     camera.rotation = 0.0f;
     camera.zoom = 1.0f;
+    
+    // For smooth zooming
+    float targetZoom = 1.0f;
 
     // Physics timestep (60 updates per second)
     const float fixedDeltaTime = Constants::PHYSICS_TIMESTEP;
@@ -37,13 +40,16 @@ int main() {
         // Handle zoom
         float wheel = GetMouseWheelMove();
         if (wheel != 0) {
-            camera.zoom += wheel * 0.1f;
-            if (camera.zoom < 0.1f) camera.zoom = 0.1f;
-            if (camera.zoom > 3.0f) camera.zoom = 3.0f;
+            targetZoom += wheel * 0.1f;
+            targetZoom = Clamp(targetZoom, 0.1f, 3.0f);
         }
-
-        // Update camera target to follow mouse when right mouse button is held
-        if (IsMouseButtonDown(MOUSE_BUTTON_RIGHT)) {
+        
+        // Smooth zoom interpolation
+        camera.zoom = Lerp(camera.zoom, targetZoom, 0.1f);
+        
+        // Pan with middle mouse button or by holding Alt + left mouse button
+        if (IsMouseButtonDown(MOUSE_BUTTON_MIDDLE) || 
+            (IsKeyDown(KEY_LEFT_ALT) && IsMouseButtonDown(MOUSE_BUTTON_LEFT))) {
             Vector2 delta = GetMouseDelta();
             camera.target.x -= delta.x / camera.zoom;
             camera.target.y -= delta.y / camera.zoom;
