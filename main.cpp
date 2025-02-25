@@ -11,6 +11,23 @@ int main() {
     
     // Initialize camera
     Camera2D camera = { 0 };
+    camera = {
+        {screenWidth/2.0f, screenHeight/2.0f},  // offset
+        {screenWidth/2.0f, screenHeight/2.0f},  // target
+        0.0f,                                   // rotation
+        1.0f                                    // zoom
+    };
+    
+    // Helper functions for smooth camera movement
+    auto Clamp = [](float value, float min, float max) -> float {
+        if (value < min) return min;
+        if (value > max) return max;
+        return value;
+    };
+    
+    auto Lerp = [](float start, float end, float amount) -> float {
+        return start + amount * (end - start);
+    };
     camera.target = {screenWidth/2.0f, screenHeight/2.0f};
     camera.offset = {screenWidth/2.0f, screenHeight/2.0f};
     camera.rotation = 0.0f;
