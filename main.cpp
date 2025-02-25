@@ -56,7 +56,7 @@ int main() {
     creatures.emplace_back(pos, Constants::INITIAL_CREATURE_SIZE);
   }
 
-  while (!WindowShouldClose()) {
+  while (!WindowShouldClose() && !creatures.empty()) {
     // Handle keyboard input
     if (IsKeyPressed(KEY_F)) {
       if (IsWindowFullscreen()) {
@@ -475,5 +475,5 @@ int main() {
   }
 
   CloseWindow();
-  return 0;
+  return creatures.empty() ? 1 : 0;  // Return error code if population dies out
 }
