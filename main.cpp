@@ -42,18 +42,6 @@ int main() {
             DrawFPS(10, 10);
         EndDrawing();
     }
-        if ((ballPosition.x >= (screenWidth - ballRadius)) || 
-            (ballPosition.x <= ballRadius)) ballSpeed.x *= -1.0f;
-        if ((ballPosition.y >= (screenHeight - ballRadius)) || 
-            (ballPosition.y <= ballRadius)) ballSpeed.y *= -1.0f;
-
-        // Draw
-        BeginDrawing();
-            ClearBackground(RAYWHITE);
-            DrawCircleV(ballPosition, ballRadius, MAROON);
-            DrawFPS(10, 10);
-        EndDrawing();
-    }
 
     CloseWindow();
     return 0;
