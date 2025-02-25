@@ -64,7 +64,7 @@ void Creature::Update(float deltaTime, const std::vector<Creature>& others, std:
                     }
                     
                     // Grow in size when eating
-                    size += 0.1f;
+                    size += Constants::FOOD_GROW_SIZE;
                     
                     // Adjust speed and strength based on size
                     speed = Clamp(speed * 0.95f, Constants::MIN_SPEED, Constants::MAX_SPEED);
