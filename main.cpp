@@ -229,8 +229,8 @@ int main() {
                 return a.GetAge() > b.GetAge();
               });
 
-    // Show top 3
-    for (int i = 0; i < std::min(3, (int)sorted_creatures.size()); i++) {
+    // Show top
+    for (int i = 0; i < std::min(10, (int)sorted_creatures.size()); i++) {
       const auto &creature = sorted_creatures[i];
       DrawText(TextFormat("%d. %s", i + 1, creature.get().GetName().c_str()),
                GetScreenWidth() - BOARD_WIDTH, BOARD_PADDING + 30 + (i * 25),
