@@ -8,9 +8,7 @@
 int main() {
   const int screenWidth = Constants::SCREEN_WIDTH;
   const int screenHeight = Constants::SCREEN_HEIGHT;
-  SetConfigFlags(
-      FLAG_WINDOW_RESIZABLE); // Make window resizable for macOS maximize
-  SetConfigFlags(FLAG_WINDOW_UNFOCUSED);
+  SetConfigFlags(FLAG_WINDOW_RESIZABLE);  // Make window resizable for macOS maximize
   InitWindow(screenWidth, screenHeight, "Creature Simulation");
 
   // Initialize camera
@@ -56,10 +54,8 @@ int main() {
   }
 
   while (!WindowShouldClose()) {
-    /*printf("Key F pressed: %s\n", IsKeyPressed(KEY_F) ? "Yes" : "No");*/
     // Handle keyboard input
     if (IsKeyPressed(KEY_F)) {
-      printf("hi\n");
       ToggleFullscreen();
     }
 
