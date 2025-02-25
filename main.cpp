@@ -54,9 +54,15 @@ int main() {
     }
 
     while (!WindowShouldClose()) {
-        // Toggle fullscreen with F11
-        if (IsKeyPressed(KEY_F11)) {
+        // Toggle fullscreen with F11 or F
+        if (IsKeyPressed(KEY_F11) || IsKeyPressed(KEY_F)) {
             ToggleFullscreen();
+        }
+
+        // Reset view with spacebar
+        if (IsKeyPressed(KEY_SPACE)) {
+            camera.target = {0, 0};
+            targetZoom = 1.0f;
         }
 
         // Handle zoom
@@ -92,8 +98,8 @@ int main() {
             }
         }
         
-        // Pan with middle mouse button
-        if (IsMouseButtonDown(MOUSE_BUTTON_MIDDLE)) {
+        // Pan with middle mouse button or left mouse button
+        if (IsMouseButtonDown(MOUSE_BUTTON_MIDDLE) || IsMouseButtonDown(MOUSE_BUTTON_LEFT)) {
             Vector2 delta = GetMouseDelta();
             camera.target.x -= (delta.x / camera.zoom);
             camera.target.y -= (delta.y / camera.zoom);

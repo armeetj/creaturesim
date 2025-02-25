@@ -183,7 +183,7 @@ void Creature::Draw() const {
         default: stateText = "Unknown";
     }
     
-    DrawText(TextFormat("%s\n%s %s", name.c_str(), isMale ? "♂" : "♀", stateText),
+    DrawText(TextFormat("%s\n%s (%s)", name.c_str(), isMale ? "♂" : "♀", stateText),
              position.x - size, position.y - size - 40, 10, WHITE);
 
     // Draw creature body
@@ -193,7 +193,7 @@ void Creature::Draw() const {
     DrawRectangle(position.x - size, position.y - size - 10, 
                   size * 2 * (health/100.0f), 4, RED);
     DrawText(TextFormat("H:%.0f", health),
-             position.x - size - 25, position.y - size - 10, 6, RED);
+             position.x - size - 35, position.y - size - 10, 6, RED);
     
     // Draw energy bar and value
     DrawRectangle(position.x - size, position.y - size - 6, 
@@ -203,11 +203,11 @@ void Creature::Draw() const {
 
     // Draw attributes in smaller text with colors
     DrawText(TextFormat("st:%.0f", strength),
-             position.x - size, position.y + size + 2, 5, ORANGE);
+             position.x - size, position.y + size + 2, 4, ORANGE);
     DrawText(TextFormat("sp:%.1f", speed),
-             position.x - size/3, position.y + size + 2, 5, SKYBLUE);
+             position.x - size/2, position.y + size + 2, 4, SKYBLUE);
     DrawText(TextFormat("mt:%.1f", metabolism),
-             position.x + size/3, position.y + size + 2, 5, GREEN);
+             position.x + size/2, position.y + size + 2, 4, GREEN);
     
     // Draw strength indicator (outline thickness)
     DrawPolyLines(position, isMale ? 3 : 6, size, rotation + 90.0f, 
