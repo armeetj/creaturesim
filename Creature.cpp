@@ -62,6 +62,14 @@ void Creature::Update(float deltaTime, const std::vector<Creature>& others, std:
                     if (energy > Constants::INITIAL_ENERGY) {
                         energy = Constants::INITIAL_ENERGY;
                     }
+                    
+                    // Grow in size when eating
+                    size += 0.1f;
+                    
+                    // Adjust speed and strength based on size
+                    speed = Clamp(speed * 0.95f, Constants::MIN_SPEED, Constants::MAX_SPEED);
+                    strength = Clamp(strength * 1.05f, Constants::MIN_STRENGTH, Constants::MAX_STRENGTH);
+                    
                     state = CreatureState::EATING;
                     // Stop moving while eating
                     velocity = {0, 0};
@@ -367,10 +375,12 @@ void Creature::Draw(int rank) const {
 
         // Draw attributes in smaller text with colors
         DrawText(TextFormat("st:%.0f", strength), position.x - size,
-                 position.y + size + 2, 1, ORANGE);
+                 position.y + size + 2, 10, ORANGE);
         DrawText(TextFormat("\nsp:%.1f", speed), position.x - size,
-                 position.y + size + 2, 1, SKYBLUE);
+                 position.y + size + 12, 10, SKYBLUE);
         DrawText(TextFormat("\n\nmt:%.1f", metabolism), position.x - size,
-                 position.y + size + 2, 1, GREEN);
+                 position.y + size + 22, 10, GREEN);
+        DrawText(TextFormat("\n\n\nsize:%.1f", size), position.x - size,
+                 position.y + size + 32, 10, PURPLE);
     }
 }
