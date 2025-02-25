@@ -110,6 +110,13 @@ int main() {
             ClearBackground(BLACK);
             BeginMode2D(camera);
             
+            // Draw world border
+            DrawRectangleLinesEx(
+                Rectangle{0, 0, (float)screenWidth, (float)screenHeight},
+                2,  // line thickness
+                ColorAlpha(LIGHTGRAY, 0.5f)  // semi-transparent light gray
+            );
+            
             // Draw food
             for (const auto& food : foods) {
                 food.Draw();
