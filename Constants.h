@@ -15,8 +15,8 @@ constexpr float MAX_METABOLISM = 1.5f;
 constexpr float HUNGRY_THRESHOLD = 30.0f;
 constexpr float CRITICAL_HEALTH = 20.0f;
 constexpr float LOW_HEALTH = 50.0f;
-constexpr float MATING_ENERGY = 60.0f;
-constexpr float MATING_AGE = 10.0f;
+constexpr float MATING_ENERGY = 50.0f;  // Lower threshold for reproduction
+constexpr float MATING_AGE = 5.0f;  // Earlier reproduction
 
 // Movement
 constexpr float BASE_MOVEMENT_SPEED = 30.0f;
@@ -25,7 +25,7 @@ constexpr float BOUNDARY_BOUNCE = -0.8f;
 constexpr float FOOD_SEEK_FORCE = 0.5f;
 
 // Energy & Health
-constexpr float ENERGY_CONSUMPTION_RATE = 5.f;
+constexpr float ENERGY_CONSUMPTION_RATE = 4.f;  // Slower energy depletion
 constexpr float HEALTH_DECAY_RATE = 10.0f;
 constexpr float FOOD_ENERGY_VALUE = 30.0f;
 
