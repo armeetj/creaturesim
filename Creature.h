@@ -6,8 +6,9 @@ enum class CreatureState {
     WANDERING,
     HUNTING,
     MATING,
-    SICK,
-    EATING
+    FIGHTING,
+    EATING,
+    SICK
 };
 
 class Creature {
@@ -27,6 +28,13 @@ private:
     float age;
     CreatureState state;
     Color color;
+    
+    // New traits
+    bool isMale;
+    float strength;     // Affects fighting success
+    float speed;        // Affects movement speed
+    float size;        // Already existed but now affects strength
+    float metabolism;   // Affects energy consumption rate
     
     void UpdateState(const std::vector<Creature>& others);
     void UpdateMovement(float deltaTime);
