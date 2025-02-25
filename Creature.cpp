@@ -280,7 +280,7 @@ Color Creature::GetStateColor() const {
         case CreatureState::WANDERING: return GRAY;
         case CreatureState::HUNTING: return GREEN;
         case CreatureState::MATING: return PINK;
-        case CreatureState::SICK: return PURPLE;
+        case CreatureState::SICK: return BROWN;
         case CreatureState::EATING: return ORANGE;
         case CreatureState::FIGHTING: return RED;
         default: return GRAY;
