@@ -108,6 +108,74 @@ int main() {
       }
     }
 
+    // Navigate between creatures using arrow keys
+    if (!creatures.empty()) {
+      // Sort creatures by age for consistent navigation
+      std::vector<std::reference_wrapper<Creature>> sorted_creatures(
+          creatures.begin(), creatures.end());
+      std::sort(sorted_creatures.begin(), sorted_creatures.end(),
+                [](const Creature &a, const Creature &b) {
+                  return a.GetAge() > b.GetAge();
+                });
+
+      if (IsKeyPressed(KEY_RIGHT)) {
+        // Find current creature's index
+        auto it = std::find_if(
+            sorted_creatures.begin(), sorted_creatures.end(),
+            [&selectedCreature](const std::reference_wrapper<Creature> &ref) {
+              return &ref.get() == selectedCreature;
+            });
+
+        // Deselect current creature
+        if (selectedCreature) {
+          selectedCreature->SetSelected(false);
+        }
+
+        // Select next creature, wrap around if at end
+        if (it != sorted_creatures.end()) {
+          auto nextIt = std::next(it);
+          if (nextIt == sorted_creatures.end()) {
+            nextIt = sorted_creatures.begin();
+          }
+          selectedCreature = &(nextIt->get());
+          selectedCreature->SetSelected(true);
+        } else if (!sorted_creatures.empty()) {
+          // Fallback if something goes wrong
+          selectedCreature = &(sorted_creatures.front().get());
+          selectedCreature->SetSelected(true);
+        }
+      }
+
+      if (IsKeyPressed(KEY_LEFT)) {
+        // Find current creature's index
+        auto it = std::find_if(
+            sorted_creatures.begin(), sorted_creatures.end(),
+            [&selectedCreature](const std::reference_wrapper<Creature> &ref) {
+              return &ref.get() == selectedCreature;
+            });
+
+        // Deselect current creature
+        if (selectedCreature) {
+          selectedCreature->SetSelected(false);
+        }
+
+        // Select previous creature, wrap around if at beginning
+        if (it != sorted_creatures.end()) {
+          if (it == sorted_creatures.begin()) {
+            it = std::prev(sorted_creatures.end());
+          } else {
+            it = std::prev(it);
+          }
+          selectedCreature = &(it->get());
+          selectedCreature->SetSelected(true);
+        } else if (!sorted_creatures.empty()) {
+          // Fallback if something goes wrong
+          selectedCreature = &(sorted_creatures.front().get());
+          selectedCreature->SetSelected(true);
+        }
+      }
+    }
+
     // Pan with middle mouse button or left mouse button
     if (IsMouseButtonDown(MOUSE_BUTTON_MIDDLE) ||
         IsMouseButtonDown(MOUSE_BUTTON_LEFT)) {
