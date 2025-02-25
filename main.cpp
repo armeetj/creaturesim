@@ -220,16 +220,23 @@ int main() {
     if (selectedCreature) {
       Vector2 pos = selectedCreature->GetPosition();
       float dx = pos.x - camera.target.x;
-      if (abs(dx) < CAMERA_SMALL_MOVE_THRES) {
-        camera.target.x += dx * smoothFactor * 0.1;
-      } else {
-        camera.target.x += dx * smoothFactor;
-      }
       float dy = pos.y - camera.target.y;
-      if (abs(dy) < CAMERA_SMALL_MOVE_THRES) {
-        camera.target.y += dy * smoothFactor * 0.1;
+      
+      // Adjust for fullscreen
+      if (IsWindowFullscreen()) {
+        camera.target.x = pos.x;
+        camera.target.y = pos.y;
       } else {
-        camera.target.y += dy * smoothFactor;
+        if (abs(dx) < CAMERA_SMALL_MOVE_THRES) {
+          camera.target.x += dx * smoothFactor * 0.1;
+        } else {
+          camera.target.x += dx * smoothFactor;
+        }
+        if (abs(dy) < CAMERA_SMALL_MOVE_THRES) {
+          camera.target.y += dy * smoothFactor * 0.1;
+        } else {
+          camera.target.y += dy * smoothFactor;
+        }
       }
     }
 
