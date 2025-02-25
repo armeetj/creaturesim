@@ -3,37 +3,33 @@
 #include "Food.h"
 #include "raylib.h"
 #include <cmath>
-#include <vector>
 #include <string>
+#include <vector>
 
-float simulationSpeed = 1.0f;  // Global simulation speed multiplier
+float simulationSpeed = 1.0f; // Global simulation speed multiplier
 
 void DrawGameOverScreen(float totalAge, int totalCreatures) {
-    BeginDrawing();
-    ClearBackground(BLACK);
-    
-    // Title
-    DrawText("GAME OVER", 
-             GetScreenWidth() / 2 - MeasureText("GAME OVER", 80) / 2, 
-             GetScreenHeight() / 2 - 100, 
-             80, RED);
-    
-    // Simulation stats
-    std::string statsText = TextFormat("Simulation Duration: %.1f seconds\n"
-                                       "Total Creatures: %d", 
-                                       totalAge, totalCreatures);
-    DrawText(statsText.c_str(), 
-             GetScreenWidth() / 2 - MeasureText(statsText.c_str(), 20) / 2, 
-             GetScreenHeight() / 2 + 50, 
-             20, WHITE);
-    
-    // Restart instructions
-    DrawText("Press ENTER to restart", 
-             GetScreenWidth() / 2 - MeasureText("Press ENTER to restart", 20) / 2, 
-             GetScreenHeight() / 2 + 150, 
-             20, GRAY);
-    
-    EndDrawing();
+  BeginDrawing();
+  ClearBackground(BLACK);
+
+  // Title
+  DrawText("GAME OVER", GetScreenWidth() / 2 - MeasureText("GAME OVER", 80) / 2,
+           GetScreenHeight() / 2 - 100, 80, RED);
+
+  // Simulation stats
+  std::string statsText = TextFormat("Simulation Duration: %.1f seconds\n"
+                                     "Total Creatures: %d",
+                                     totalAge, totalCreatures);
+  DrawText(statsText.c_str(),
+           GetScreenWidth() / 2 - MeasureText(statsText.c_str(), 20) / 2,
+           GetScreenHeight() / 2 + 50, 20, WHITE);
+
+  // Restart instructions
+  DrawText("Press ENTER to restart",
+           GetScreenWidth() / 2 - MeasureText("Press ENTER to restart", 20) / 2,
+           GetScreenHeight() / 2 + 150, 20, GRAY);
+
+  EndDrawing();
 }
 
 int main() {
@@ -42,11 +38,11 @@ int main() {
   SetConfigFlags(FLAG_WINDOW_RESIZABLE);
   SetConfigFlags(FLAG_WINDOW_TOPMOST);
   InitWindow(screenWidth, screenHeight, "Creature Sim");
-  
+
   bool gameOver = false;
   float totalSimulationAge = 0.0f;
   int totalCreaturesEverLived = 0;
-  float totalSimulationTime = 0.0f;  // Track total simulation time
+  float totalSimulationTime = 0.0f; // Track total simulation time
 
   // Initialize camera
   // Helper functions for smooth camera movement
@@ -117,7 +113,7 @@ int main() {
         float minY = creatures[0].GetPosition().y;
         float maxY = minY;
 
-        for (const auto& creature : creatures) {
+        for (const auto &creature : creatures) {
           Vector2 pos = creature.GetPosition();
           minX = std::min(minX, pos.x);
           maxX = std::max(maxX, pos.x);
@@ -125,10 +121,7 @@ int main() {
           maxY = std::max(maxY, pos.y);
         }
 
-        Vector2 centerPos = {
-          (minX + maxX) / 2.0f,
-          (minY + maxY) / 2.0f
-        };
+        Vector2 centerPos = {(minX + maxX) / 2.0f, (minY + maxY) / 2.0f};
 
         camera.target = centerPos;
         camera.zoom = 1.0f;
@@ -168,7 +161,7 @@ int main() {
           for (auto &otherCreature : creatures) {
             otherCreature.SetSelected(false);
           }
-          
+
           // Select the clicked creature
           selectedCreature = &creature;
           creature.SetSelected(true);
@@ -191,12 +184,12 @@ int main() {
       for (int key = KEY_ONE; key <= KEY_NINE; key++) {
         if (IsKeyPressed(key)) {
           int index = key - KEY_ONE;
-          
+
           // Deselect current creature
           if (selectedCreature) {
             selectedCreature->SetSelected(false);
           }
-          
+
           // Select creature by leaderboard position
           if (index < sorted_creatures.size()) {
             selectedCreature = &(sorted_creatures[index].get());
@@ -291,7 +284,7 @@ int main() {
       float minY = creatures[0].GetPosition().y;
       float maxY = minY;
 
-      for (const auto& creature : creatures) {
+      for (const auto &creature : creatures) {
         Vector2 pos = creature.GetPosition();
         minX = std::min(minX, pos.x);
         maxX = std::max(maxX, pos.x);
@@ -299,20 +292,18 @@ int main() {
         maxY = std::max(maxY, pos.y);
       }
 
-      Vector2 centerPos = {
-        (minX + maxX) / 2.0f,
-        (minY + maxY) / 2.0f
-      };
+      Vector2 centerPos = {(minX + maxX) / 2.0f, (minY + maxY) / 2.0f};
 
       // Smoother camera movement with exponential decay
-      const float smoothFactor = 0.01f;         // Adjust for more or less lag
-      const float CAMERA_SMALL_MOVE_THRES = 200; // largest number of pixels for small camera move
-    
+      const float smoothFactor = 0.01f; // Adjust for more or less lag
+      const float CAMERA_SMALL_MOVE_THRES =
+          200; // largest number of pixels for small camera move
+
       if (selectedCreature) {
         Vector2 pos = selectedCreature->GetPosition();
         float dx = pos.x - camera.target.x;
         float dy = pos.y - camera.target.y;
-      
+
         // Adjust for fullscreen
         if (IsWindowFullscreen()) {
           camera.target.x = centerPos.x;
@@ -356,14 +347,14 @@ int main() {
 
       // Handle simulation speed control with more consistent key handling
       if (IsKeyDown(KEY_UP)) {
-        simulationSpeed *= 1.05f;  // Gradual increase
+        simulationSpeed *= 1.05f; // Gradual increase
         simulationSpeed = Clamp(simulationSpeed, 0.125f, 100.0f);
       }
       if (IsKeyDown(KEY_DOWN)) {
-        simulationSpeed /= 1.05f;  // Gradual decrease
+        simulationSpeed /= 1.05f; // Gradual decrease
         simulationSpeed = Clamp(simulationSpeed, 0.125f, 100.0f);
       }
-      
+
       // Precise speed reset
       if (IsKeyPressed(KEY_R)) {
         simulationSpeed = 1.0f;
@@ -371,7 +362,8 @@ int main() {
 
       // Update all creatures
       for (auto &creature : creatures) {
-        creature.Update(fixedDeltaTime * simulationSpeed, creatures, foods, creatures);
+        creature.Update(fixedDeltaTime * simulationSpeed, creatures, foods,
+                        creatures);
       }
 
       // Remove consumed food
@@ -384,12 +376,12 @@ int main() {
           std::remove_if(creatures.begin(), creatures.end(),
                          [](const Creature &c) { return !c.IsAlive(); }),
           creatures.end());
-      
+
       // Update total creatures ever lived during creature updates
-      for (const auto& creature : creatures) {
-          if (creature.GetAge() <= fixedDeltaTime * simulationSpeed) {
-              totalCreaturesEverLived++;
-          }
+      for (const auto &creature : creatures) {
+        if (creature.GetAge() <= fixedDeltaTime * simulationSpeed) {
+          totalCreaturesEverLived++;
+        }
       }
 
       accumulator -= fixedDeltaTime;
@@ -445,7 +437,8 @@ int main() {
     // Draw UI (not affected by camera)
     DrawFPS(10, 10);
     DrawText(TextFormat("Zoom: %.2fx", camera.zoom), 10, 50, 20, WHITE);
-    DrawText(TextFormat("Sim Speed: %.2fx", simulationSpeed), 10, 70, 20, DARKGRAY);
+    DrawText(TextFormat("Sim Speed: %.2fx", simulationSpeed), 10, 70, 20,
+             DARKGRAY);
 
     // Draw keybinds
     const int KEYBIND_Y = GetScreenHeight() - 250;
@@ -455,14 +448,29 @@ int main() {
     Color keybindColor = LIGHTGRAY;
 
     DrawText("KEYBINDS:", KEYBIND_X, KEYBIND_Y, KEYBIND_FONT_SIZE + 2, YELLOW);
-    DrawText("SPACE: Reset Camera", KEYBIND_X, KEYBIND_Y + KEYBIND_LINE_HEIGHT, KEYBIND_FONT_SIZE, keybindColor);
-    DrawText("F: Toggle Fullscreen", KEYBIND_X, KEYBIND_Y + KEYBIND_LINE_HEIGHT * 2, KEYBIND_FONT_SIZE, keybindColor);
-    DrawText("Mouse Wheel: Zoom", KEYBIND_X, KEYBIND_Y + KEYBIND_LINE_HEIGHT * 3, KEYBIND_FONT_SIZE, keybindColor);
-    DrawText("Middle Mouse: Pan", KEYBIND_X, KEYBIND_Y + KEYBIND_LINE_HEIGHT * 4, KEYBIND_FONT_SIZE, keybindColor);
-    DrawText("Left/Right: Select Creature", KEYBIND_X, KEYBIND_Y + KEYBIND_LINE_HEIGHT * 5, KEYBIND_FONT_SIZE, keybindColor);
-    DrawText("1-9: Select Top Creatures", KEYBIND_X, KEYBIND_Y + KEYBIND_LINE_HEIGHT * 6, KEYBIND_FONT_SIZE, keybindColor);
-    DrawText("UP/DOWN: Change Sim Speed", KEYBIND_X, KEYBIND_Y + KEYBIND_LINE_HEIGHT * 7, KEYBIND_FONT_SIZE, keybindColor);
-    DrawText("R: Reset Sim Speed", KEYBIND_X, KEYBIND_Y + KEYBIND_LINE_HEIGHT * 8, KEYBIND_FONT_SIZE, keybindColor);
+    DrawText("SPACE: Reset Camera", KEYBIND_X, KEYBIND_Y + KEYBIND_LINE_HEIGHT,
+             KEYBIND_FONT_SIZE, keybindColor);
+    DrawText("F: Toggle Fullscreen", KEYBIND_X,
+             KEYBIND_Y + KEYBIND_LINE_HEIGHT * 2, KEYBIND_FONT_SIZE,
+             keybindColor);
+    DrawText("Mouse Wheel: Zoom", KEYBIND_X,
+             KEYBIND_Y + KEYBIND_LINE_HEIGHT * 3, KEYBIND_FONT_SIZE,
+             keybindColor);
+    DrawText("Middle Mouse: Pan", KEYBIND_X,
+             KEYBIND_Y + KEYBIND_LINE_HEIGHT * 4, KEYBIND_FONT_SIZE,
+             keybindColor);
+    DrawText("Left/Right: Select Creature", KEYBIND_X,
+             KEYBIND_Y + KEYBIND_LINE_HEIGHT * 5, KEYBIND_FONT_SIZE,
+             keybindColor);
+    DrawText("1-9: Select Top Creatures", KEYBIND_X,
+             KEYBIND_Y + KEYBIND_LINE_HEIGHT * 6, KEYBIND_FONT_SIZE,
+             keybindColor);
+    DrawText("UP/DOWN: Change Sim Speed", KEYBIND_X,
+             KEYBIND_Y + KEYBIND_LINE_HEIGHT * 7, KEYBIND_FONT_SIZE,
+             keybindColor);
+    DrawText("R: Reset Sim Speed", KEYBIND_X,
+             KEYBIND_Y + KEYBIND_LINE_HEIGHT * 8, KEYBIND_FONT_SIZE,
+             keybindColor);
 
     // Sort creatures by age
     std::vector<std::reference_wrapper<const Creature>> sorted_creatures(
@@ -520,46 +528,46 @@ int main() {
 
   // Game over handling
   if (creatures.empty()) {
-      gameOver = true;
-      
-      // Create ranked_creatures vector if creatures is empty
-      std::vector<std::reference_wrapper<const Creature>> ranked_creatures;
-      totalSimulationAge = totalSimulationTime;  // Use total simulation time
+    gameOver = true;
+
+    // Create ranked_creatures vector if creatures is empty
+    std::vector<std::reference_wrapper<const Creature>> ranked_creatures;
+    totalSimulationAge = totalSimulationTime; // Use total simulation time
   }
-    
+
   // Game over screen and restart logic
   while (gameOver) {
-      DrawGameOverScreen(totalSimulationAge, totalCreaturesEverLived);
-        
-      // Restart option
-      if (IsKeyPressed(KEY_ENTER)) {
-          // Reset everything
-          creatures.clear();
-          foods.clear();
-          selectedCreature = nullptr;
-            
-          // Repopulate
-          for (int i = 0; i < Constants::INITIAL_CREATURE_COUNT; i++) {
-              Vector2 pos = {(float)GetRandomValue(0, screenWidth),
-                             (float)GetRandomValue(0, screenHeight)};
-              creatures.emplace_back(pos, Constants::INITIAL_CREATURE_SIZE);
-          }
-            
-          // Reset simulation variables
-          simulationSpeed = 1.0f;
-          totalSimulationAge = 0.0f;
-          totalSimulationTime = 0.0f;  // Reset total simulation time
-          totalCreaturesEverLived = 0;
-          gameOver = false;
+    DrawGameOverScreen(totalSimulationAge, totalCreaturesEverLived);
+
+    // Restart option
+    if (IsKeyPressed(KEY_ENTER)) {
+      // Reset everything
+      creatures.clear();
+      foods.clear();
+      selectedCreature = nullptr;
+
+      // Repopulate
+      for (int i = 0; i < Constants::INITIAL_CREATURE_COUNT; i++) {
+        Vector2 pos = {(float)GetRandomValue(0, screenWidth),
+                       (float)GetRandomValue(0, screenHeight)};
+        creatures.emplace_back(pos, Constants::INITIAL_CREATURE_SIZE);
       }
-        
-      // Allow quitting from game over screen
-      if (WindowShouldClose()) {
-          CloseWindow();
-          return 0;
-      }
+
+      // Reset simulation variables
+      simulationSpeed = 1.0f;
+      totalSimulationAge = 0.0f;
+      totalSimulationTime = 0.0f; // Reset total simulation time
+      totalCreaturesEverLived = 0;
+      gameOver = false;
+    }
+
+    // Allow quitting from game over screen
+    if (WindowShouldClose()) {
+      CloseWindow();
+      return 0;
+    }
   }
-    
+
   CloseWindow();
   return 0;
 }
