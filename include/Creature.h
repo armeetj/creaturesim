@@ -1,6 +1,6 @@
 #pragma once
 #include "Food.h"
-#include "names.h"
+#include "../include/names.h"
 #include "raylib.h"
 #include <string>
 #include <vector>

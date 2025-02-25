@@ -2,6 +2,7 @@
 #include <cmath>
 
 #include "Constants.h"
+// No changes needed to implementation
 
 Creature::Creature(Vector2 pos, float size)
     : position(pos), velocity({0, 0}), rotation(0.0f), size(size),

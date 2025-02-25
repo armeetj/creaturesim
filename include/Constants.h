@@ -1,5 +1,7 @@
 #pragma once
 
+// No changes needed, just ensuring it's in the correct directory
+
 namespace Constants {
 // Creature traits
 constexpr float INITIAL_HEALTH = 100.0f;

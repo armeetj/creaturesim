@@ -2,6 +2,7 @@
 #include "Creature.h"
 #include "Food.h"
 #include "raylib.h"
+#include "../include/names.h"
 #include <cmath>
 #include <string>
 #include <vector>

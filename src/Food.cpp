@@ -1,4 +1,5 @@
 #include "Food.h"
+// No changes needed to implementation
 
 Food::Food(Vector2 pos) : position(pos), consumed(false) {}
 
