@@ -8,6 +8,7 @@ int main() {
     const int screenWidth = Constants::SCREEN_WIDTH;
     const int screenHeight = Constants::SCREEN_HEIGHT;
     InitWindow(screenWidth, screenHeight, "Creature Simulation");
+    SetTargetFPS(60);
     
     // Initialize camera
     // Helper functions for smooth camera movement
@@ -50,6 +51,11 @@ int main() {
     }
 
     while (!WindowShouldClose()) {
+        // Toggle fullscreen with F11
+        if (IsKeyPressed(KEY_F11)) {
+            ToggleFullscreen();
+        }
+
         // Handle zoom
         float wheel = GetMouseWheelMove();
         if (wheel != 0) {
