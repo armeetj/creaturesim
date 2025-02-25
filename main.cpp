@@ -101,6 +101,12 @@ int main() {
         float dist = sqrt(pow(mouseWorldPos.x - pos.x, 2) +
                           pow(mouseWorldPos.y - pos.y, 2));
         if (dist < Constants::INITIAL_CREATURE_SIZE) {
+          // Deselect any previously selected creature
+          for (auto &otherCreature : creatures) {
+            otherCreature.SetSelected(false);
+          }
+          
+          // Select the clicked creature
           selectedCreature = &creature;
           creature.SetSelected(true);
           break;
@@ -108,7 +114,7 @@ int main() {
       }
     }
 
-    // Navigate between creatures using arrow keys
+    // Navigate between creatures using arrow keys and number keys
     if (!creatures.empty()) {
       // Sort creatures by age for consistent navigation
       std::vector<std::reference_wrapper<Creature>> sorted_creatures(
@@ -117,6 +123,24 @@ int main() {
                 [](const Creature &a, const Creature &b) {
                   return a.GetAge() > b.GetAge();
                 });
+
+      // Number key selection (1-9)
+      for (int key = KEY_ONE; key <= KEY_NINE; key++) {
+        if (IsKeyPressed(key)) {
+          int index = key - KEY_ONE;
+          
+          // Deselect current creature
+          if (selectedCreature) {
+            selectedCreature->SetSelected(false);
+          }
+          
+          // Select creature by leaderboard position
+          if (index < sorted_creatures.size()) {
+            selectedCreature = &(sorted_creatures[index].get());
+            selectedCreature->SetSelected(true);
+          }
+        }
+      }
 
       if (IsKeyPressed(KEY_RIGHT)) {
         // Find current creature's index
