@@ -101,10 +101,9 @@ void Creature::UpdateMovement(float deltaTime) {
     
     // Limit velocity
     float speed = sqrt(velocity.x * velocity.x + velocity.y * velocity.y);
-    float maxSpeed = Constants::MAX_VELOCITY * speed;
-    if (speed > maxSpeed) {
-        velocity.x = (velocity.x / speed) * maxSpeed;
-        velocity.y = (velocity.y / speed) * maxSpeed;
+    if (speed > Constants::MAX_VELOCITY) {
+        velocity.x = (velocity.x / speed) * Constants::MAX_VELOCITY;
+        velocity.y = (velocity.y / speed) * Constants::MAX_VELOCITY;
     }
     
     position.x += velocity.x * deltaTime * Constants::BASE_MOVEMENT_SPEED * speed;
