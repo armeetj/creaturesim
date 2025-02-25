@@ -339,14 +339,19 @@ void Creature::Draw(int rank) const {
     
     // Determine color based on selection state
     Color baseColor = color;
-    if (!selected) {
-        // Dim unselected creatures
-        baseColor = ColorAlpha(color, 0.3f);
-    }
+    Color nameColor = WHITE;
+    Color statusColor = LIGHTGRAY;
 
-    // Draw name with rank and status
-    Color nameColor = ColorAlpha(WHITE, selected ? 0.9f : 0.3f);
-    Color statusColor = ColorAlpha(LIGHTGRAY, selected ? 0.7f : 0.2f);
+    // Check if any creature is selected
+    bool anyCreatureSelected = std::any_of(creatures.begin(), creatures.end(), 
+        [](const Creature& c) { return c.IsSelected(); });
+
+    // Dim all creatures except the selected one
+    if (anyCreatureSelected && !selected) {
+        baseColor = ColorAlpha(color, 0.3f);
+        nameColor = ColorAlpha(WHITE, 0.3f);
+        statusColor = ColorAlpha(LIGHTGRAY, 0.2f);
+    }
     DrawText(TextFormat("#%d %s", rank, name.c_str()),
              position.x - size, position.y - size - 40, 10, nameColor);
     DrawText(TextFormat("[%.1fs]\n(%s)", age, stateText),
