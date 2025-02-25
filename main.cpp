@@ -79,7 +79,7 @@ int main() {
     float wheel = GetMouseWheelMove();
     if (wheel != 0) {
       targetZoom += wheel * 0.1f;
-      targetZoom = Clamp(targetZoom, 0.1f, 3.0f);
+      targetZoom = Clamp(targetZoom, 0.5f, 5.0f);
     }
 
     // Smooth zoom interpolation
