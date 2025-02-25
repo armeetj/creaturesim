@@ -189,11 +189,22 @@ int main() {
                      (float)GetScreenHeight() / 2.0f};
 
     // Smoother camera movement with exponential decay
-    const float smoothFactor = 0.001f; // Adjust for more or less lag
+    const float smoothFactor = 0.01f;         // Adjust for more or less lag
+    const float CAMERA_SMALL_MOVE_THRES = 200; // largest number of pixels for small camera move
     if (selectedCreature) {
       Vector2 pos = selectedCreature->GetPosition();
-      camera.target.x += (pos.x - camera.target.x) * smoothFactor;
-      camera.target.y += (pos.y - camera.target.y) * smoothFactor;
+      float dx = pos.x - camera.target.x;
+      if (abs(dx) < CAMERA_SMALL_MOVE_THRES) {
+        camera.target.x += dx * smoothFactor * 0.1;
+      } else {
+        camera.target.x += dx * smoothFactor;
+      }
+      float dy = pos.y - camera.target.y;
+      if (abs(dy) < CAMERA_SMALL_MOVE_THRES) {
+        camera.target.y += dy * smoothFactor * 0.1;
+      } else {
+        camera.target.y += dy * smoothFactor;
+      }
     }
 
     accumulator += GetFrameTime();
@@ -242,12 +253,12 @@ int main() {
         borderColor);
 
     // Draw grid dots
-    int gridSpacing = 50;  // Adjust for dot density
+    int gridSpacing = 50; // Adjust for dot density
     Color dotColor = ColorAlpha(GRAY, 0.2f);
     for (int x = 0; x < GetScreenWidth(); x += gridSpacing) {
-        for (int y = 0; y < GetScreenHeight(); y += gridSpacing) {
-            DrawCircle(x, y, 2, dotColor);
-        }
+      for (int y = 0; y < GetScreenHeight(); y += gridSpacing) {
+        DrawCircle(x, y, 2, dotColor);
+      }
     }
 
     // Draw food
