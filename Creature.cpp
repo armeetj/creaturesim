@@ -220,21 +220,35 @@ void Creature::UpdateMovement(float deltaTime, const std::vector<Creature>& othe
         return;
     }
     
+    // Separation force to prevent overcrowding
+    Vector2 separationForce = {0, 0};
+    const float SEPARATION_RADIUS = size * Constants::SEPARATION_RADIUS_FACTOR;
+    
     // Find the creature we're fighting or mating with
     Creature* interactionPartner = nullptr;
     for (const auto& other : others) {
-        if (&other != this && (other.state == CreatureState::FIGHTING || other.state == CreatureState::MATING)) {
-            Vector2 otherPos = other.GetPosition();
-            float dx = position.x - otherPos.x;
-            float dy = position.y - otherPos.y;
-            float dist = sqrt(dx*dx + dy*dy);
+        if (&other != this) {
+            // Calculate distance between creatures
+            float dx = position.x - other.position.x;
+            float dy = position.y - other.position.y;
+            float distance = sqrt(dx*dx + dy*dy);
             
-            if (dist > size * 2) {
-                // Move closer to interaction partner
-                velocity.x = (otherPos.x - position.x) / dist * Constants::BASE_MOVEMENT_SPEED;
-                velocity.y = (otherPos.y - position.y) / dist * Constants::BASE_MOVEMENT_SPEED;
-                interactionPartner = const_cast<Creature*>(&other);
-                break;
+            // Check for interaction partner
+            if (other.state == CreatureState::FIGHTING || other.state == CreatureState::MATING) {
+                if (distance > size * 2) {
+                    // Move closer to interaction partner
+                    velocity.x = (other.position.x - position.x) / distance * Constants::BASE_MOVEMENT_SPEED;
+                    velocity.y = (other.position.y - position.y) / distance * Constants::BASE_MOVEMENT_SPEED;
+                    interactionPartner = const_cast<Creature*>(&other);
+                }
+            }
+            
+            // Apply separation if too close
+            if (distance > 0 && distance < SEPARATION_RADIUS) {
+                // Inverse proportional force - closer = stronger push
+                float strength = (SEPARATION_RADIUS - distance) / SEPARATION_RADIUS * Constants::SEPARATION_STRENGTH;
+                separationForce.x += dx / distance * strength;
+                separationForce.y += dy / distance * strength;
             }
         }
     }
@@ -248,9 +262,13 @@ void Creature::UpdateMovement(float deltaTime, const std::vector<Creature>& othe
         }
     }
     
+    // Incorporate separation force
+    velocity.x += separationForce.x;
+    velocity.y += separationForce.y;
+    
     // Limit velocity
     float speed = sqrt(velocity.x * velocity.x + velocity.y * velocity.y);
-    if (speed >  Constants::MAX_VELOCITY) {
+    if (speed > Constants::MAX_VELOCITY) {
         velocity.x = (velocity.x / speed) * Constants::MAX_VELOCITY;
         velocity.y = (velocity.y / speed) * Constants::MAX_VELOCITY;
     }
