@@ -56,7 +56,7 @@ private:
     float metabolism;   // Affects energy consumption rate (0.5-1.5)
     bool selected = false;
     
-    void UpdateState(const std::vector<Creature>& others, std::vector<Creature>& allCreatures);
+    void UpdateState(const std::vector<Creature>& others, std::vector<Food>& foods, std::vector<Creature>& allCreatures);
     void UpdateMovement(float deltaTime);
     void UpdateColor();
     Color GetStateColor() const;
