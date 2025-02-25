@@ -220,32 +220,10 @@ void Creature::UpdateMovement(float deltaTime, const std::vector<Creature>& othe
         return;
     }
     
-    // Find the creature we're fighting or mating with
-    Creature* interactionPartner = nullptr;
-    for (const auto& other : others) {
-        if (&other != this && (other.state == CreatureState::FIGHTING || other.state == CreatureState::MATING)) {
-            Vector2 otherPos = other.GetPosition();
-            float dx = position.x - otherPos.x;
-            float dy = position.y - otherPos.y;
-            float dist = sqrt(dx*dx + dy*dy);
-            
-            if (dist > size * 2) {
-                // Move closer to interaction partner
-                velocity.x = (otherPos.x - position.x) / dist * Constants::BASE_MOVEMENT_SPEED;
-                velocity.y = (otherPos.y - position.y) / dist * Constants::BASE_MOVEMENT_SPEED;
-                interactionPartner = const_cast<Creature*>(&other);
-                break;
-            }
-        }
-    }
-    
-    // Normal movement if not in a specific interaction
-    if (interactionPartner == nullptr) {
-        if (state != CreatureState::HUNTING) {
-            // Normal random movement
-            velocity.x += (float)GetRandomValue(-20, 20) / 100.0f;
-            velocity.y += (float)GetRandomValue(-20, 20) / 100.0f;
-        }
+    // Normal random movement
+    if (state != CreatureState::HUNTING) {
+        velocity.x += (float)GetRandomValue(-20, 20) / 100.0f;
+        velocity.y += (float)GetRandomValue(-20, 20) / 100.0f;
     }
     
     // Limit velocity
