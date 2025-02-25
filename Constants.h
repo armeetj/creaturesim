@@ -23,8 +23,6 @@ namespace Constants {
     constexpr float MAX_VELOCITY = 2.0f;
     constexpr float BOUNDARY_BOUNCE = -0.8f;
     constexpr float FOOD_SEEK_FORCE = 0.5f;
-    constexpr float SEPARATION_RADIUS_FACTOR = 2.0f;  // Multiplied by creature size
-    constexpr float SEPARATION_STRENGTH = 5.0f;
     
     // Energy & Health
     constexpr float ENERGY_CONSUMPTION_RATE = 1.f;
