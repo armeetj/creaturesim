@@ -6,6 +6,9 @@ This project simulates creatures in a 2D environment where they move, eat, fight
 
 https://github.com/user-attachments/assets/06dbd380-469c-4b47-b0e8-cd37e8c55a86
 
+I didn't spend too much time balancing environment parameters, as the system is pretty volatile, so the population quickly balloons out of control.
+The low bitrate also ruins the quality, so I'd recommend just building for yourself. It's very easy: install raylib, and then run make run.
+
 
 ## Features
 - **Creature Attributes**: Each creature has attributes like position, velocity, rotation, size, health, energy, strength, speed, metabolism, and age.
