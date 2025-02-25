@@ -8,8 +8,8 @@
 int main() {
   const int screenWidth = Constants::SCREEN_WIDTH;
   const int screenHeight = Constants::SCREEN_HEIGHT;
-  /*SetConfigFlags(FLAG_WINDOW_RESIZABLE);*/
-  /*SetConfigFlags(FLAG_WINDOW_TOPMOST);*/
+  SetConfigFlags(FLAG_WINDOW_RESIZABLE);
+  SetConfigFlags(FLAG_WINDOW_TOPMOST);
   InitWindow(screenWidth, screenHeight, "Creature Sim");
 
   // Initialize camera
