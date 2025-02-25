@@ -248,9 +248,19 @@ int main() {
         foodSpawnTimer = 0;
       }
 
+      // Handle simulation speed control
+      if (IsKeyPressed(KEY_UP)) {
+        simulationSpeed *= 2.0f;
+        simulationSpeed = Clamp(simulationSpeed, 0.125f, 8.0f);
+      }
+      if (IsKeyPressed(KEY_DOWN)) {
+        simulationSpeed /= 2.0f;
+        simulationSpeed = Clamp(simulationSpeed, 0.125f, 8.0f);
+      }
+
       // Update all creatures
       for (auto &creature : creatures) {
-        creature.Update(fixedDeltaTime, creatures, foods, creatures);
+        creature.Update(fixedDeltaTime * simulationSpeed, creatures, foods, creatures);
       }
 
       // Remove consumed food
@@ -317,6 +327,7 @@ int main() {
     // Draw UI (not affected by camera)
     DrawFPS(10, 10);
     DrawText(TextFormat("Zoom: %.2fx", camera.zoom), 10, 50, 20, WHITE);
+    DrawText(TextFormat("Sim Speed: %.2fx", simulationSpeed), 10, 70, 20, DARKGRAY);
 
     // Sort creatures by age
     std::vector<std::reference_wrapper<const Creature>> sorted_creatures(
