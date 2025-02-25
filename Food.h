@@ -9,8 +9,10 @@ public:
     Vector2 GetPosition() const { return position; }
     void Consume() { consumed = true; }
 
+public:
+    static constexpr float SIZE = 6.0f; // Make food slightly bigger
+
 private:
     Vector2 position;
     bool consumed;
-    static constexpr float SIZE = 6.0f; // Make food slightly bigger
 };
