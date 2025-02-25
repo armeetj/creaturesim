@@ -8,8 +8,9 @@
 int main() {
   const int screenWidth = Constants::SCREEN_WIDTH;
   const int screenHeight = Constants::SCREEN_HEIGHT;
-  SetConfigFlags(FLAG_WINDOW_RESIZABLE);  // Make window resizable for macOS maximize
-  InitWindow(screenWidth, screenHeight, "Creature Simulation");
+  /*SetConfigFlags(FLAG_WINDOW_RESIZABLE);*/
+  /*SetConfigFlags(FLAG_WINDOW_TOPMOST);*/
+  InitWindow(screenWidth, screenHeight, "Creature Sim");
 
   // Initialize camera
   // Helper functions for smooth camera movement
@@ -60,8 +61,8 @@ int main() {
         ToggleFullscreen();
         SetWindowSize(screenWidth, screenHeight);
       } else {
-        SetWindowSize(GetMonitorWidth(GetCurrentMonitor()), 
-                     GetMonitorHeight(GetCurrentMonitor()));
+        SetWindowSize(GetMonitorWidth(GetCurrentMonitor()),
+                      GetMonitorHeight(GetCurrentMonitor()));
         ToggleFullscreen();
       }
     }
@@ -70,7 +71,8 @@ int main() {
       camera.target = {0, 0};
       camera.zoom = 1.0f;
       targetZoom = 1.0f;
-      camera.offset = {(float)GetScreenWidth()/2.0f, (float)GetScreenHeight()/2.0f};
+      camera.offset = {(float)GetScreenWidth() / 2.0f,
+                       (float)GetScreenHeight() / 2.0f};
     }
 
     // Handle zoom
@@ -118,20 +120,12 @@ int main() {
     camera.offset = {(float)GetScreenWidth() / 2.0f,
                      (float)GetScreenHeight() / 2.0f};
 
-    // Update camera to follow selected creature
+    // Smoother camera movement with exponential decay
+    const float smoothFactor = 0.001f; // Adjust for more or less lag
     if (selectedCreature) {
       Vector2 pos = selectedCreature->GetPosition();
-      // Smoother camera following with variable speed based on distance
-      float dx = pos.x - camera.target.x;
-      float dy = pos.y - camera.target.y;
-      float dist = sqrt(dx * dx + dy * dy);
-      // Smoother camera movement
-      float targetSpeed = Clamp(dist / 1000.0f, 0.005f, 0.05f);
-      static float currentSpeed = targetSpeed;
-      currentSpeed = Lerp(currentSpeed, targetSpeed, 0.1f);
-
-      camera.target.x = Lerp(camera.target.x, pos.x, currentSpeed);
-      camera.target.y = Lerp(camera.target.y, pos.y, currentSpeed);
+      camera.target.x += (pos.x - camera.target.x) * smoothFactor;
+      camera.target.y += (pos.y - camera.target.y) * smoothFactor;
     }
 
     accumulator += GetFrameTime();
@@ -169,24 +163,15 @@ int main() {
     }
 
     BeginDrawing();
-    ClearBackground(Color{10, 10, 30, 255});  // Dark blue-black background
+    ClearBackground(Color{10, 10, 10, 255}); // Dark background
     BeginMode2D(camera);
 
     // Draw world border using current window size
     // Draw world border with gradient
     Color borderColor = ColorAlpha(LIGHTGRAY, 0.3f);
     DrawRectangleLinesEx(
-        Rectangle{0, 0, (float)GetScreenWidth(), (float)GetScreenHeight()},
-        2, borderColor
-    );
-    
-    // Draw subtle grid
-    for(int x = 0; x < GetScreenWidth(); x += 50) {
-        DrawLine(x, 0, x, GetScreenHeight(), ColorAlpha(LIGHTGRAY, 0.1f));
-    }
-    for(int y = 0; y < GetScreenHeight(); y += 50) {
-        DrawLine(0, y, GetScreenWidth(), y, ColorAlpha(LIGHTGRAY, 0.1f));
-    }
+        Rectangle{0, 0, (float)GetScreenWidth(), (float)GetScreenHeight()}, 2,
+        borderColor);
 
     // Draw food
     for (const auto &food : foods) {
@@ -217,8 +202,6 @@ int main() {
 
     // Draw UI (not affected by camera)
     DrawFPS(10, 10);
-    DrawText(TextFormat("Creatures: %d", (int)creatures.size()), 10, 30, 20,
-             WHITE);
     DrawText(TextFormat("Zoom: %.2fx", camera.zoom), 10, 50, 20, WHITE);
 
     // Sort creatures by age
@@ -230,40 +213,46 @@ int main() {
               });
 
     // Draw leaderboard
-    const int BOARD_WIDTH = 200;
+    const int BOARD_WIDTH = 250;
     const int BOARD_PADDING = 10;
     const int ENTRY_HEIGHT = 25;
     const int HEADER_HEIGHT = 50;
     const int numEntries = std::min(10, (int)sorted_creatures.size());
     const int BOARD_HEIGHT = HEADER_HEIGHT + (numEntries * ENTRY_HEIGHT);
-    
+
+    const int BOARD_X = GetScreenWidth() - BOARD_WIDTH - BOARD_PADDING;
+    const int TEXT_X = BOARD_X + 10; // Left padding for text
+
     // Draw leaderboard background with gradient
     Color topColor = {20, 20, 40, 230};
     Color bottomColor = {40, 40, 60, 230};
-    DrawRectangleGradientV(GetScreenWidth() - BOARD_WIDTH - BOARD_PADDING, BOARD_PADDING,
-                          BOARD_WIDTH, BOARD_HEIGHT, topColor, bottomColor);
-    // Draw border
-    DrawRectangleLinesEx(
-        Rectangle{(float)(GetScreenWidth() - BOARD_WIDTH - BOARD_PADDING), 
-                 (float)BOARD_PADDING,
-                 (float)BOARD_WIDTH, (float)BOARD_HEIGHT},
-        1, ColorAlpha(LIGHTGRAY, 0.3f));
+    DrawRectangleGradientV(BOARD_X, BOARD_PADDING, BOARD_WIDTH, BOARD_HEIGHT,
+                           topColor, bottomColor);
 
-    DrawText("TOP CREATURES", GetScreenWidth() - BOARD_WIDTH, BOARD_PADDING + 5,
-             20, YELLOW);
-    DrawText(TextFormat("Total: %d", (int)creatures.size()),
-             GetScreenWidth() - BOARD_WIDTH, BOARD_PADDING + 25,
-             15, LIGHTGRAY);
+    // Draw border
+    DrawRectangleLinesEx(Rectangle{(float)BOARD_X, (float)BOARD_PADDING,
+                                   (float)BOARD_WIDTH, (float)BOARD_HEIGHT},
+                         1, ColorAlpha(LIGHTGRAY, 0.3f));
+
+    // Draw title
+    DrawText("TOP CREATURES", TEXT_X, BOARD_PADDING + 5, 20, YELLOW);
+    DrawText(TextFormat("Total: %d", (int)creatures.size()), TEXT_X,
+             BOARD_PADDING + 28, 15, LIGHTGRAY);
 
     // Show top creatures
-    for (int i = 0; i < std::min(10, (int)sorted_creatures.size()); i++) {
+    for (int i = 0; i < numEntries; i++) {
       const auto &creature = sorted_creatures[i];
+
+      // Creature rank and name
       DrawText(TextFormat("%d. %s", i + 1, creature.get().GetName().c_str()),
-               GetScreenWidth() - BOARD_WIDTH, BOARD_PADDING + HEADER_HEIGHT + (i * ENTRY_HEIGHT),
-               15, WHITE);
+               TEXT_X, BOARD_PADDING + HEADER_HEIGHT + (i * ENTRY_HEIGHT), 15,
+               WHITE);
+
+      // Creature stats aligned to the right
       DrawText(TextFormat("H:%.0f E:%.0f", creature.get().GetHealth(),
                           creature.get().GetEnergy()),
-               GetScreenWidth() - BOARD_WIDTH + 120,
+               BOARD_X + BOARD_WIDTH -
+                   80, // Adjust positioning for full width usage
                BOARD_PADDING + HEADER_HEIGHT + (i * ENTRY_HEIGHT), 12, WHITE);
     }
     EndDrawing();

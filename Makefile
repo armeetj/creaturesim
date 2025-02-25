@@ -1,4 +1,4 @@
-CC = g++
+CC = clang++
 CFLAGS = -Wall -std=c++11 -I/opt/homebrew/include
 LIBS = -L/opt/homebrew/lib -lraylib
 

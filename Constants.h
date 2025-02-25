@@ -13,8 +13,8 @@ namespace Constants {
     
     // State thresholds
     constexpr float HUNGRY_THRESHOLD = 30.0f;
-    constexpr float CRITICAL_HEALTH = 40.0f;
-    constexpr float LOW_HEALTH = 70.0f;
+    constexpr float CRITICAL_HEALTH = 20.0f;
+    constexpr float LOW_HEALTH = 50.0f;
     constexpr float MATING_ENERGY = 60.0f;
     constexpr float MATING_AGE = 10.0f;
     
@@ -25,15 +25,15 @@ namespace Constants {
     constexpr float FOOD_SEEK_FORCE = 0.5f;
     
     // Energy & Health
-    constexpr float ENERGY_CONSUMPTION_RATE = 0.5f;
+    constexpr float ENERGY_CONSUMPTION_RATE = 1.f;
     constexpr float HEALTH_DECAY_RATE = 5.0f;
     constexpr float FOOD_ENERGY_VALUE = 30.0f;
     
     // Simulation
     constexpr float PHYSICS_TIMESTEP = 1.0f/60.0f;
-    constexpr float FOOD_SPAWN_INTERVAL = 10.f;
+    constexpr float FOOD_SPAWN_INTERVAL = 20.f;
     constexpr int FOOD_SPAWN_COUNT = 2;
-    constexpr int INITIAL_CREATURE_COUNT = 20;
+    constexpr int INITIAL_CREATURE_COUNT = 10;
     constexpr float INITIAL_CREATURE_SIZE = 10.0f;
     
     // Screen
