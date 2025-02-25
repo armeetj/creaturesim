@@ -224,20 +224,28 @@ int main() {
     // Draw leaderboard
     const int BOARD_WIDTH = 200;
     const int BOARD_PADDING = 10;
+    const int ENTRY_HEIGHT = 25;
+    const int HEADER_HEIGHT = 50;
+    const int numEntries = std::min(10, (int)sorted_creatures.size());
+    const int BOARD_HEIGHT = HEADER_HEIGHT + (numEntries * ENTRY_HEIGHT);
+    
     // Draw leaderboard background with gradient
     Color topColor = {20, 20, 40, 230};
     Color bottomColor = {40, 40, 60, 230};
     DrawRectangleGradientV(GetScreenWidth() - BOARD_WIDTH - BOARD_PADDING, BOARD_PADDING,
-                          BOARD_WIDTH, 120, topColor, bottomColor);
+                          BOARD_WIDTH, BOARD_HEIGHT, topColor, bottomColor);
     // Draw border
     DrawRectangleLinesEx(
         Rectangle{(float)(GetScreenWidth() - BOARD_WIDTH - BOARD_PADDING), 
                  (float)BOARD_PADDING,
-                 (float)BOARD_WIDTH, 120},
+                 (float)BOARD_WIDTH, (float)BOARD_HEIGHT},
         1, ColorAlpha(LIGHTGRAY, 0.3f));
 
     DrawText("TOP CREATURES", GetScreenWidth() - BOARD_WIDTH, BOARD_PADDING + 5,
              20, YELLOW);
+    DrawText(TextFormat("Total: %d", (int)creatures.size()),
+             GetScreenWidth() - BOARD_WIDTH, BOARD_PADDING + 25,
+             15, LIGHTGRAY);
 
     // Sort creatures by age
     std::vector<std::reference_wrapper<const Creature>> sorted_creatures(
@@ -251,12 +259,12 @@ int main() {
     for (int i = 0; i < std::min(10, (int)sorted_creatures.size()); i++) {
       const auto &creature = sorted_creatures[i];
       DrawText(TextFormat("%d. %s", i + 1, creature.get().GetName().c_str()),
-               GetScreenWidth() - BOARD_WIDTH, BOARD_PADDING + 30 + (i * 25),
+               GetScreenWidth() - BOARD_WIDTH, BOARD_PADDING + HEADER_HEIGHT + (i * ENTRY_HEIGHT),
                15, WHITE);
       DrawText(TextFormat("H:%.0f E:%.0f", creature.get().GetHealth(),
                           creature.get().GetEnergy()),
                GetScreenWidth() - BOARD_WIDTH + 120,
-               BOARD_PADDING + 30 + (i * 25), 12, WHITE);
+               BOARD_PADDING + HEADER_HEIGHT + (i * ENTRY_HEIGHT), 12, WHITE);
     }
     EndDrawing();
   }
