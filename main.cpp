@@ -518,7 +518,6 @@ int main() {
       // Create ranked_creatures vector if creatures is empty
       std::vector<std::reference_wrapper<const Creature>> ranked_creatures;
       totalSimulationAge = 0.0f;
-      totalCreaturesEverLived = totalCreaturesEverLived;
   }
     
   // Game over screen and restart logic
