@@ -33,7 +33,7 @@ void Creature::Update(float deltaTime, const std::vector<Creature>& others, std:
                 float dy = position.y - foodPos.y;
                 float distance = sqrt(dx*dx + dy*dy);
                 
-                if (distance < size * 2) {
+                if (distance < (size + Food::SIZE)) {
                     food.Consume();
                     energy += 30;
                     if (energy > 100) energy = 100;
@@ -69,11 +69,7 @@ void Creature::UpdateState(const std::vector<Creature>& others) {
 }
 
 void Creature::UpdateMovement(float deltaTime) {
-    if (state == CreatureState::HUNTING) {
-        // More directed movement when hunting
-        velocity.x += (float)GetRandomValue(-10, 10) / 100.0f;
-        velocity.y += (float)GetRandomValue(-10, 10) / 100.0f;
-    } else {
+    if (state != CreatureState::HUNTING) {
         // Normal random movement
         velocity.x += (float)GetRandomValue(-20, 20) / 100.0f;
         velocity.y += (float)GetRandomValue(-20, 20) / 100.0f;

@@ -12,5 +12,5 @@ public:
 private:
     Vector2 position;
     bool consumed;
-    static constexpr float SIZE = 4.0f;
+    static constexpr float SIZE = 6.0f; // Make food slightly bigger
 };
