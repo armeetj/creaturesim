@@ -8,7 +8,7 @@
 
 float simulationSpeed = 1.0f;  // Global simulation speed multiplier
 
-void DrawGameOverScreen(int totalAge, int totalCreatures) {
+void DrawGameOverScreen(float totalAge, int totalCreatures) {
     BeginDrawing();
     ClearBackground(BLACK);
     
@@ -46,6 +46,7 @@ int main() {
   bool gameOver = false;
   float totalSimulationAge = 0.0f;
   int totalCreaturesEverLived = 0;
+  float totalSimulationTime = 0.0f;  // Track total simulation time
 
   // Initialize camera
   // Helper functions for smooth camera movement
@@ -338,6 +339,9 @@ int main() {
     accumulator += GetFrameTime();
 
     while (accumulator >= fixedDeltaTime) {
+      // Accumulate total simulation time
+      totalSimulationTime += fixedDeltaTime * simulationSpeed;
+
       // Spawn food periodically
       foodSpawnTimer += fixedDeltaTime;
       if (foodSpawnTimer >= foodSpawnInterval) {
@@ -517,7 +521,7 @@ int main() {
       
       // Create ranked_creatures vector if creatures is empty
       std::vector<std::reference_wrapper<const Creature>> ranked_creatures;
-      totalSimulationAge = 0.0f;
+      totalSimulationAge = totalSimulationTime;  // Use total simulation time
   }
     
   // Game over screen and restart logic
@@ -541,6 +545,7 @@ int main() {
           // Reset simulation variables
           simulationSpeed = 1.0f;
           totalSimulationAge = 0.0f;
+          totalSimulationTime = 0.0f;  // Reset total simulation time
           totalCreaturesEverLived = 0;
           gameOver = false;
       }
