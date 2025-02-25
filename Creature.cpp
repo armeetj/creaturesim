@@ -113,6 +113,23 @@ Color Creature::GetStateColor() const {
 }
 
 void Creature::Draw() const {
+    // Draw status text
+    const char* stateText;
+    switch (state) {
+        case CreatureState::WANDERING: stateText = "Wandering"; break;
+        case CreatureState::HUNTING: stateText = "Hunting"; break;
+        case CreatureState::MATING: stateText = "Mating"; break;
+        case CreatureState::FIGHTING: stateText = "Fighting"; break;
+        case CreatureState::EATING: stateText = "Eating"; break;
+        case CreatureState::SICK: stateText = "Sick"; break;
+        default: stateText = "Unknown";
+    }
+    
+    DrawText(TextFormat("%s %s\nE:%.0f H:%.0f", 
+             isMale ? "♂" : "♀", stateText, 
+             energy, health),
+             position.x - size, position.y - size - 30, 10, WHITE);
+
     // Draw creature body
     DrawPoly(position, isMale ? 3 : 6, size, 0, color);
     
