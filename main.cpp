@@ -380,14 +380,17 @@ int main() {
                   foods.end());
 
       // Remove dead creatures and track total creatures
-      int initialCreatureCount = creatures.size();
       creatures.erase(
           std::remove_if(creatures.begin(), creatures.end(),
                          [](const Creature &c) { return !c.IsAlive(); }),
           creatures.end());
       
-      // Update total creatures ever lived
-      totalCreaturesEverLived += initialCreatureCount - creatures.size();
+      // Update total creatures ever lived during creature updates
+      for (const auto& creature : creatures) {
+          if (creature.GetAge() <= fixedDeltaTime * simulationSpeed) {
+              totalCreaturesEverLived++;
+          }
+      }
 
       accumulator -= fixedDeltaTime;
     }
