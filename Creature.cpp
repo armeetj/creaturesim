@@ -44,19 +44,19 @@ void Creature::UpdateState(const std::vector<Creature>& others) {
 
 void Creature::UpdateMovement(float deltaTime) {
     // Add random movement
-    velocity.x += (float)GetRandomValue(-100, 100) / 100.0f;
-    velocity.y += (float)GetRandomValue(-100, 100) / 100.0f;
+    velocity.x += (float)GetRandomValue(-20, 20) / 100.0f;
+    velocity.y += (float)GetRandomValue(-20, 20) / 100.0f;
     
     // Limit velocity
     float speed = sqrt(velocity.x * velocity.x + velocity.y * velocity.y);
-    float maxSpeed = 5.0f * speed; // Use speed trait
+    float maxSpeed = 2.0f * speed; // Use speed trait
     if (speed > maxSpeed) {
         velocity.x = (velocity.x / speed) * maxSpeed;
         velocity.y = (velocity.y / speed) * maxSpeed;
     }
     
-    position.x += velocity.x * deltaTime * 60.0f * speed;
-    position.y += velocity.y * deltaTime * 60.0f * speed;
+    position.x += velocity.x * deltaTime * 30.0f * speed;
+    position.y += velocity.y * deltaTime * 30.0f * speed;
     
     // Keep in bounds
     if (position.x < 0) position.x = 0;
