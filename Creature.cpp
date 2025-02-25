@@ -20,6 +20,13 @@ Creature::Creature(Vector2 pos, float size)
     , metabolism((float)GetRandomValue(Constants::MIN_METABOLISM * 100, Constants::MAX_METABOLISM * 100) / 100.0f) {
 }
 
+// Helper function
+float Clamp(float value, float min, float max) {
+    if (value < min) return min;
+    if (value > max) return max;
+    return value;
+}
+
 void Creature::Update(float deltaTime, const std::vector<Creature>& others, std::vector<Food>& foods) {
     age += deltaTime;
     energy -= deltaTime * Constants::ENERGY_CONSUMPTION_RATE * metabolism;
@@ -75,12 +82,12 @@ void Creature::Update(float deltaTime, const std::vector<Creature>& others, std:
         }
     }
 
-    UpdateState(others);
+    UpdateState(others, foods);  // Temporarily passing foods instead of creatures
     UpdateMovement(deltaTime);
     UpdateColor();
 }
 
-void Creature::UpdateState(const std::vector<Creature>& others) {
+void Creature::UpdateState(const std::vector<Creature>& others, std::vector<Creature>& allCreatures) {
     // Priority-based state machine
     if (state == CreatureState::EATING) {
         // Stay in eating state for a short duration
