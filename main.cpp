@@ -70,11 +70,32 @@ int main() {
     }
 
     if (IsKeyPressed(KEY_SPACE)) {
-      camera.target = {0, 0};
-      camera.zoom = 1.0f;
-      targetZoom = 1.0f;
-      camera.offset = {(float)GetScreenWidth() / 2.0f,
-                       (float)GetScreenHeight() / 2.0f};
+      // Calculate center of creatures' boundary
+      if (!creatures.empty()) {
+        float minX = creatures[0].GetPosition().x;
+        float maxX = minX;
+        float minY = creatures[0].GetPosition().y;
+        float maxY = minY;
+
+        for (const auto& creature : creatures) {
+          Vector2 pos = creature.GetPosition();
+          minX = std::min(minX, pos.x);
+          maxX = std::max(maxX, pos.x);
+          minY = std::min(minY, pos.y);
+          maxY = std::max(maxY, pos.y);
+        }
+
+        Vector2 centerPos = {
+          (minX + maxX) / 2.0f,
+          (minY + maxY) / 2.0f
+        };
+
+        camera.target = centerPos;
+        camera.zoom = 1.0f;
+        targetZoom = 1.0f;
+        camera.offset = {(float)GetScreenWidth() / 2.0f,
+                         (float)GetScreenHeight() / 2.0f};
+      }
     }
 
     // Handle zoom
