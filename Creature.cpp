@@ -194,7 +194,7 @@ void Creature::UpdateState(const std::vector<Creature>& others, std::vector<Food
                         
                         // Clamp values
                         mixStrength = Clamp(mixStrength, Constants::MIN_STRENGTH, Constants::MAX_STRENGTH);
-                        mixSpeed = Clamp(mixSpeed, Constants::MIN_SPEED, Constants::MAX_SPEED);
+                        mixSpeed = Clamp(mixSpeed + 0.1f, Constants::MIN_SPEED, Constants::MAX_SPEED);
                         mixMetabolism = Clamp(mixMetabolism, Constants::MIN_METABOLISM, Constants::MAX_METABOLISM);
                         
                         // Create new creature
@@ -218,6 +218,28 @@ void Creature::UpdateState(const std::vector<Creature>& others, std::vector<Food
         state = CreatureState::SICK;
     } else {
         state = CreatureState::WANDERING;
+    }
+
+    // Implement contagion for sick creatures
+    if (state == CreatureState::SICK) {
+        for (auto& other : const_cast<std::vector<Creature>&>(others)) {
+            if (&other != this) {
+                Vector2 otherPos = other.GetPosition();
+                float dx = position.x - otherPos.x;
+                float dy = position.y - otherPos.y;
+                float dist = sqrt(dx*dx + dy*dy);
+                
+                // If close enough, chance of spreading sickness
+                if (dist < size * 2) {
+                    if (GetRandomValue(0, 100) < 10) {  // 10% chance of infection
+                        other.health -= 5.0f;  // Reduce health
+                        if (other.health < Constants::CRITICAL_HEALTH) {
+                            other.state = CreatureState::SICK;
+                        }
+                    }
+                }
+            }
+        }
     }
 }
 
