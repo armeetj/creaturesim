@@ -514,7 +514,10 @@ int main() {
   // Game over handling
   if (creatures.empty()) {
       gameOver = true;
-      totalSimulationAge = ranked_creatures.empty() ? 0 : ranked_creatures.front().get().GetAge();
+      
+      // Create ranked_creatures vector if creatures is empty
+      std::vector<std::reference_wrapper<const Creature>> ranked_creatures;
+      totalSimulationAge = 0.0f;
       totalCreaturesEverLived = totalCreaturesEverLived;
   }
     
