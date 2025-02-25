@@ -82,12 +82,12 @@ void Creature::Update(float deltaTime, const std::vector<Creature>& others, std:
         }
     }
 
-    UpdateState(others, allCreatures);  // Now allCreatures is properly passed in
+    UpdateState(others, foods, allCreatures);  // Pass foods to UpdateState
     UpdateMovement(deltaTime);
     UpdateColor();
 }
 
-void Creature::UpdateState(const std::vector<Creature>& others, std::vector<Creature>& allCreatures) {
+void Creature::UpdateState(const std::vector<Creature>& others, std::vector<Food>& foods, std::vector<Creature>& allCreatures) {
     timeSinceLastFight += GetFrameTime();
 
     // Priority-based state machine
