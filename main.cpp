@@ -9,7 +9,6 @@ int main() {
     const int screenHeight = Constants::SCREEN_HEIGHT;
     SetConfigFlags(FLAG_WINDOW_RESIZABLE);  // Make window resizable for macOS maximize
     InitWindow(screenWidth, screenHeight, "Creature Simulation");
-    SetTargetFPS(60);
     
     // Initialize camera
     // Helper functions for smooth camera movement
