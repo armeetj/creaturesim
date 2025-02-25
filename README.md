@@ -3,6 +3,10 @@
 ## Overview
 This project simulates creatures in a 2D environment where they move, eat, fight, mate, and interact with each other based on predefined rules. The simulation models simple behaviors such as wandering, hunting, and responding to external stimuli like food, other creatures, and their energy levels.
 
+
+https://github.com/user-attachments/assets/06dbd380-469c-4b47-b0e8-cd37e8c55a86
+
+
 ## Features
 - **Creature Attributes**: Each creature has attributes like position, velocity, rotation, size, health, energy, strength, speed, metabolism, and age.
 - **Behavioral States**:
