@@ -193,17 +193,21 @@ void Creature::Draw() const {
     DrawRectangle(position.x - size, position.y - size - 10, 
                   size * 2 * (health/100.0f), 4, RED);
     DrawText(TextFormat("H:%.0f", health),
-             position.x - size - 20, position.y - size - 10, 6, RED);
+             position.x - size - 25, position.y - size - 10, 6, RED);
     
     // Draw energy bar and value
     DrawRectangle(position.x - size, position.y - size - 6, 
                   size * 2 * (energy/100.0f), 4, YELLOW);
     DrawText(TextFormat("E:%.0f", energy),
-             position.x + size * 2 + 2, position.y - size - 10, 6, YELLOW);
+             position.x + size * 2 - 2, position.y - size - 10, 6, YELLOW);
 
-    // Draw attributes in smaller text
-    DrawText(TextFormat("S:%.0f >%.1f M:%.1f", strength, speed, metabolism),
-             position.x - size, position.y - size - 18, 8, WHITE);
+    // Draw attributes in smaller text with colors
+    DrawText(TextFormat("st:%.0f", strength),
+             position.x - size, position.y + size + 2, 5, ORANGE);
+    DrawText(TextFormat("sp:%.1f", speed),
+             position.x - size/3, position.y + size + 2, 5, SKYBLUE);
+    DrawText(TextFormat("mt:%.1f", metabolism),
+             position.x + size/3, position.y + size + 2, 5, GREEN);
     
     // Draw strength indicator (outline thickness)
     DrawPolyLines(position, isMale ? 3 : 6, size, rotation + 90.0f, 

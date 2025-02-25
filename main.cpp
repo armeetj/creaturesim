@@ -99,6 +99,9 @@ int main() {
             camera.target.y -= (delta.y / camera.zoom);
         }
         
+        // Update camera offset based on current window size
+        camera.offset = {(float)GetScreenWidth()/2.0f, (float)GetScreenHeight()/2.0f};
+        
         // Update camera to follow selected creature
         if (selectedCreature) {
             Vector2 pos = selectedCreature->GetPosition();
