@@ -324,7 +324,7 @@ float Creature::GetFightProbability(const Creature& opponent) const {
     return Clamp(baseProbability, 0.0f, 1.0f);
 }
 
-void Creature::Draw(int rank) const {
+void Creature::Draw(int rank, const std::vector<Creature>& allCreatures) const {
     // Draw status text
     const char* stateText;
     switch (state) {
@@ -343,7 +343,7 @@ void Creature::Draw(int rank) const {
     Color statusColor = LIGHTGRAY;
 
     // Check if any creature is selected
-    bool anyCreatureSelected = std::any_of(creatures.begin(), creatures.end(), 
+    bool anyCreatureSelected = std::any_of(allCreatures.begin(), allCreatures.end(), 
         [](const Creature& c) { return c.IsSelected(); });
 
     // Dim all creatures except the selected one

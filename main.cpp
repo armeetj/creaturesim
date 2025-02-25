@@ -324,7 +324,7 @@ int main() {
             return &ref.get() == &creature;
           });
       int rank = std::distance(ranked_creatures.begin(), it) + 1;
-      creature.Draw(rank);
+      creature.Draw(rank, creatures);
     }
 
     EndMode2D();

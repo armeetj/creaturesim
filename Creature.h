@@ -19,7 +19,7 @@ public:
     Creature(Vector2 pos, float size);
     
     void Update(float deltaTime, const std::vector<Creature>& others, std::vector<Food>& foods, std::vector<Creature>& allCreatures);
-    void Draw(int rank = 0) const;
+    void Draw(int rank = 0, const std::vector<Creature>& allCreatures = std::vector<Creature>()) const;
     bool IsAlive() const { return health > 0; }
     Vector2 GetPosition() const { return position; }
     const std::string& GetName() const { return name; }
