@@ -1,5 +1,6 @@
 #pragma once
 #include "raylib.h"
+#include "Food.h"
 #include <vector>
 
 enum class CreatureState {
