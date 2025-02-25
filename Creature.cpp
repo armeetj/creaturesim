@@ -47,11 +47,16 @@ void Creature::Update(float deltaTime, const std::vector<Creature>& others, std:
                     foundFood = true;
                 }
                 
-                if (distance < (size + Food::SIZE)) {
+                // Check if we're close enough to eat
+                if (distance < (size + Food::SIZE) * 0.5f) {
                     food.Consume();
                     energy += Constants::FOOD_ENERGY_VALUE;
-                    if (energy > Constants::INITIAL_ENERGY) energy = Constants::INITIAL_ENERGY;
+                    if (energy > Constants::INITIAL_ENERGY) {
+                        energy = Constants::INITIAL_ENERGY;
+                    }
                     state = CreatureState::EATING;
+                    // Stop moving while eating
+                    velocity = {0, 0};
                     break;
                 }
             }
@@ -76,8 +81,16 @@ void Creature::Update(float deltaTime, const std::vector<Creature>& others, std:
 
 void Creature::UpdateState(const std::vector<Creature>& others) {
     // Priority-based state machine
-    if (energy < Constants::HUNGRY_THRESHOLD || state == CreatureState::EATING) {
-        // Eating is highest priority when hungry
+    if (state == CreatureState::EATING) {
+        // Stay in eating state for a short duration
+        static float eatTimer = 0;
+        eatTimer += GetFrameTime();
+        if (eatTimer > 1.0f) {
+            eatTimer = 0;
+            state = CreatureState::WANDERING;
+        }
+    } else if (energy < Constants::HUNGRY_THRESHOLD) {
+        // Hunting is highest priority when hungry
         state = CreatureState::HUNTING;
     } else if (health < Constants::CRITICAL_HEALTH) {
         // Very low health is an emergency
@@ -94,6 +107,12 @@ void Creature::UpdateState(const std::vector<Creature>& others) {
 }
 
 void Creature::UpdateMovement(float deltaTime) {
+    // Don't move while eating
+    if (state == CreatureState::EATING) {
+        velocity = {0, 0};
+        return;
+    }
+    
     if (state != CreatureState::HUNTING) {
         // Normal random movement
         velocity.x += (float)GetRandomValue(-20, 20) / 100.0f;
