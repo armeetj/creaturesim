@@ -1,6 +1,6 @@
 CC = g++
-CFLAGS = -Wall -std=c++11
-LIBS = -lraylib -lGL -lm -lpthread -ldl -lrt -lX11
+CFLAGS = -Wall -std=c++11 -I/opt/homebrew/include
+LIBS = -L/opt/homebrew/lib -lraylib
 
 TARGET = game
 SOURCE = main.cpp
