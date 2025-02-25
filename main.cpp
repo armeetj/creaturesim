@@ -3,8 +3,8 @@
 #include <vector>
 
 int main() {
-    const int screenWidth = 800;
-    const int screenHeight = 450;
+    const int screenWidth = 1200;
+    const int screenHeight = 800;
     InitWindow(screenWidth, screenHeight, "Creature Simulation");
 
     // Physics timestep (60 updates per second)
@@ -13,7 +13,7 @@ int main() {
 
     // Create initial creatures
     std::vector<Creature> creatures;
-    for (int i = 0; i < 10; i++) {
+    for (int i = 0; i < 30; i++) {
         Vector2 pos = {
             (float)GetRandomValue(0, screenWidth),
             (float)GetRandomValue(0, screenHeight)
