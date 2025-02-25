@@ -4,8 +4,37 @@
 #include "raylib.h"
 #include <cmath>
 #include <vector>
+#include <string>
 
 float simulationSpeed = 1.0f;  // Global simulation speed multiplier
+
+void DrawGameOverScreen(int totalAge, int totalCreatures) {
+    BeginDrawing();
+    ClearBackground(BLACK);
+    
+    // Title
+    DrawText("GAME OVER", 
+             GetScreenWidth() / 2 - MeasureText("GAME OVER", 80) / 2, 
+             GetScreenHeight() / 2 - 100, 
+             80, RED);
+    
+    // Simulation stats
+    std::string statsText = TextFormat("Simulation Duration: %.1f seconds\n"
+                                       "Total Creatures: %d", 
+                                       totalAge, totalCreatures);
+    DrawText(statsText.c_str(), 
+             GetScreenWidth() / 2 - MeasureText(statsText.c_str(), 20) / 2, 
+             GetScreenHeight() / 2 + 50, 
+             20, WHITE);
+    
+    // Restart instructions
+    DrawText("Press ENTER to restart", 
+             GetScreenWidth() / 2 - MeasureText("Press ENTER to restart", 20) / 2, 
+             GetScreenHeight() / 2 + 150, 
+             20, GRAY);
+    
+    EndDrawing();
+}
 
 int main() {
   const int screenWidth = Constants::SCREEN_WIDTH;
@@ -13,6 +42,10 @@ int main() {
   SetConfigFlags(FLAG_WINDOW_RESIZABLE);
   SetConfigFlags(FLAG_WINDOW_TOPMOST);
   InitWindow(screenWidth, screenHeight, "Creature Sim");
+  
+  bool gameOver = false;
+  float totalSimulationAge = 0.0f;
+  int totalCreaturesEverLived = 0;
 
   // Initialize camera
   // Helper functions for smooth camera movement
@@ -342,11 +375,15 @@ int main() {
                                  [](const Food &f) { return f.IsConsumed(); }),
                   foods.end());
 
-      // Remove dead creatures
+      // Remove dead creatures and track total creatures
+      int initialCreatureCount = creatures.size();
       creatures.erase(
           std::remove_if(creatures.begin(), creatures.end(),
                          [](const Creature &c) { return !c.IsAlive(); }),
           creatures.end());
+      
+      // Update total creatures ever lived
+      totalCreaturesEverLived += initialCreatureCount - creatures.size();
 
       accumulator -= fixedDeltaTime;
     }
@@ -474,6 +511,45 @@ int main() {
     EndDrawing();
   }
 
+  // Game over handling
+  if (creatures.empty()) {
+      gameOver = true;
+      totalSimulationAge = ranked_creatures.empty() ? 0 : ranked_creatures.front().get().GetAge();
+      totalCreaturesEverLived = totalCreaturesEverLived;
+  }
+    
+  // Game over screen and restart logic
+  while (gameOver) {
+      DrawGameOverScreen(totalSimulationAge, totalCreaturesEverLived);
+        
+      // Restart option
+      if (IsKeyPressed(KEY_ENTER)) {
+          // Reset everything
+          creatures.clear();
+          foods.clear();
+          selectedCreature = nullptr;
+            
+          // Repopulate
+          for (int i = 0; i < Constants::INITIAL_CREATURE_COUNT; i++) {
+              Vector2 pos = {(float)GetRandomValue(0, screenWidth),
+                             (float)GetRandomValue(0, screenHeight)};
+              creatures.emplace_back(pos, Constants::INITIAL_CREATURE_SIZE);
+          }
+            
+          // Reset simulation variables
+          simulationSpeed = 1.0f;
+          totalSimulationAge = 0.0f;
+          totalCreaturesEverLived = 0;
+          gameOver = false;
+      }
+        
+      // Allow quitting from game over screen
+      if (WindowShouldClose()) {
+          CloseWindow();
+          return 0;
+      }
+  }
+    
   CloseWindow();
-  return creatures.empty() ? 1 : 0;  // Return error code if population dies out
+  return 0;
 }
