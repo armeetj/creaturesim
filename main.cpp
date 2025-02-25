@@ -56,13 +56,21 @@ int main() {
   while (!WindowShouldClose()) {
     // Handle keyboard input
     if (IsKeyPressed(KEY_F)) {
-      ToggleFullscreen();
+      if (IsWindowFullscreen()) {
+        ToggleFullscreen();
+        SetWindowSize(screenWidth, screenHeight);
+      } else {
+        SetWindowSize(GetMonitorWidth(GetCurrentMonitor()), 
+                     GetMonitorHeight(GetCurrentMonitor()));
+        ToggleFullscreen();
+      }
     }
 
     if (IsKeyPressed(KEY_SPACE)) {
       camera.target = {0, 0};
       camera.zoom = 1.0f;
       targetZoom = 1.0f;
+      camera.offset = {(float)GetScreenWidth()/2.0f, (float)GetScreenHeight()/2.0f};
     }
 
     // Handle zoom
