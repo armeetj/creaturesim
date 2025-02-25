@@ -338,10 +338,9 @@ void Creature::Draw(int rank) const {
              position.x + size * 2 - 2, position.y - size - 10, 6, ColorAlpha(YELLOW, 0.8f));
 
     
-    // Draw strength indicator with thicker outline
-    float outlineThickness = 2.0f + (strength / 50.0f);  // More pronounced thickness
-    DrawPolyLinesEx(position, isMale ? 3 : 6, size, outlineThickness, rotation + 90.0f, 
-                    ColorAlpha(WHITE, 0.7f));  // More visible
+    // Draw strength indicator (outline thickness)
+    DrawPolyLines(position, isMale ? 3 : 6, size, rotation + 90.0f, 
+                  ColorAlpha(WHITE, strength/100.0f));
                   
     // Draw selection indicator
     if (selected) {
