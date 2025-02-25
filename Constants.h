@@ -31,9 +31,9 @@ namespace Constants {
     
     // Simulation
     constexpr float PHYSICS_TIMESTEP = 1.0f/60.0f;
-    constexpr float FOOD_SPAWN_INTERVAL = 20.f;
-    constexpr int FOOD_SPAWN_COUNT = 2;
-    constexpr int INITIAL_CREATURE_COUNT = 10;
+    constexpr float FOOD_SPAWN_INTERVAL = 7.f;
+    constexpr int FOOD_SPAWN_COUNT = 1;
+    constexpr int INITIAL_CREATURE_COUNT = 30;
     constexpr float INITIAL_CREATURE_SIZE = 10.0f;
     
     // Screen
