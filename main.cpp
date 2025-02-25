@@ -5,7 +5,6 @@ int main() {
     const int screenWidth = 800;
     const int screenHeight = 450;
     InitWindow(screenWidth, screenHeight, "Bouncing Ball Game");
-    SetTargetFPS(60);
 
     // Ball properties
     Vector2 ballPosition = { screenWidth/2.0f, screenHeight/2.0f };
