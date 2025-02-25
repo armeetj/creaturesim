@@ -175,7 +175,7 @@ int main() {
                         creature.get().GetEnergy()),
                         GetScreenWidth() - BOARD_WIDTH + 120,
                         BOARD_PADDING + 30 + (i * 25),
-                        15, WHITE);
+                        12, WHITE);
             }
         EndDrawing();
     }
