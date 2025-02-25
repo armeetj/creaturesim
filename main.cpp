@@ -248,14 +248,19 @@ int main() {
         foodSpawnTimer = 0;
       }
 
-      // Handle simulation speed control
-      if (IsKeyPressed(KEY_UP)) {
-        simulationSpeed *= 2.0f;
+      // Handle simulation speed control with more consistent key handling
+      if (IsKeyDown(KEY_UP)) {
+        simulationSpeed *= 1.01f;  // Gradual increase
         simulationSpeed = Clamp(simulationSpeed, 0.125f, 8.0f);
       }
-      if (IsKeyPressed(KEY_DOWN)) {
-        simulationSpeed /= 2.0f;
+      if (IsKeyDown(KEY_DOWN)) {
+        simulationSpeed /= 1.01f;  // Gradual decrease
         simulationSpeed = Clamp(simulationSpeed, 0.125f, 8.0f);
+      }
+      
+      // Precise speed reset
+      if (IsKeyPressed(KEY_R)) {
+        simulationSpeed = 1.0f;
       }
 
       // Update all creatures
