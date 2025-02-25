@@ -169,15 +169,24 @@ int main() {
     }
 
     BeginDrawing();
-    ClearBackground(BLACK);
+    ClearBackground(Color{10, 10, 30, 255});  // Dark blue-black background
     BeginMode2D(camera);
 
     // Draw world border using current window size
+    // Draw world border with gradient
+    Color borderColor = ColorAlpha(LIGHTGRAY, 0.3f);
     DrawRectangleLinesEx(
         Rectangle{0, 0, (float)GetScreenWidth(), (float)GetScreenHeight()},
-        2,                          // line thickness
-        ColorAlpha(LIGHTGRAY, 0.5f) // semi-transparent light gray
+        2, borderColor
     );
+    
+    // Draw subtle grid
+    for(int x = 0; x < GetScreenWidth(); x += 50) {
+        DrawLine(x, 0, x, GetScreenHeight(), ColorAlpha(LIGHTGRAY, 0.1f));
+    }
+    for(int y = 0; y < GetScreenHeight(); y += 50) {
+        DrawLine(0, y, GetScreenWidth(), y, ColorAlpha(LIGHTGRAY, 0.1f));
+    }
 
     // Draw food
     for (const auto &food : foods) {
@@ -215,8 +224,17 @@ int main() {
     // Draw leaderboard
     const int BOARD_WIDTH = 200;
     const int BOARD_PADDING = 10;
-    DrawRectangle(GetScreenWidth() - BOARD_WIDTH - BOARD_PADDING, BOARD_PADDING,
-                  BOARD_WIDTH, 120, ColorAlpha(BLACK, 0.7f));
+    // Draw leaderboard background with gradient
+    Color topColor = {20, 20, 40, 230};
+    Color bottomColor = {40, 40, 60, 230};
+    DrawRectangleGradientV(GetScreenWidth() - BOARD_WIDTH - BOARD_PADDING, BOARD_PADDING,
+                          BOARD_WIDTH, 120, topColor, bottomColor);
+    // Draw border
+    DrawRectangleLinesEx(
+        Rectangle{(float)(GetScreenWidth() - BOARD_WIDTH - BOARD_PADDING), 
+                 (float)BOARD_PADDING,
+                 (float)BOARD_WIDTH, 120},
+        1, ColorAlpha(LIGHTGRAY, 0.3f));
 
     DrawText("TOP CREATURES", GetScreenWidth() - BOARD_WIDTH, BOARD_PADDING + 5,
              20, YELLOW);

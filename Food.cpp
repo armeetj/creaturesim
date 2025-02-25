@@ -7,6 +7,8 @@ Food::Food(Vector2 pos)
 
 void Food::Draw() const {
     if (!consumed) {
-        DrawCircle(position.x, position.y, SIZE, YELLOW);
+        // Draw food with glow effect
+        DrawCircle(position.x, position.y, SIZE + 2, ColorAlpha(YELLOW, 0.2f));
+        DrawCircle(position.x, position.y, SIZE, ColorAlpha(YELLOW, 0.8f));
     }
 }

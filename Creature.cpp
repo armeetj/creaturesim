@@ -237,23 +237,32 @@ void Creature::Draw(int rank) const {
         default: stateText = "Unknown";
     }
     
-    DrawText(TextFormat("#%d %s [%.1fs]\n(%s)", rank, name.c_str(), age, stateText),
-             position.x - size, position.y - size - 40, 10, WHITE);
+    // Draw name with rank and status
+    Color nameColor = ColorAlpha(WHITE, 0.9f);
+    Color statusColor = ColorAlpha(LIGHTGRAY, 0.7f);
+    DrawText(TextFormat("#%d %s", rank, name.c_str()),
+             position.x - size, position.y - size - 40, 10, nameColor);
+    DrawText(TextFormat("[%.1fs]\n(%s)", age, stateText),
+             position.x - size, position.y - size - 30, 8, statusColor);
 
     // Draw creature body
     DrawPoly(position, isMale ? 3 : 6, size, rotation + 90.0f, color);
     
-    // Draw health bar and value
+    // Draw health bar background and bar
+    DrawRectangle(position.x - size, position.y - size - 10,
+                  size * 2, 4, ColorAlpha(RED, 0.2f));
     DrawRectangle(position.x - size, position.y - size - 10, 
-                  size * 2 * (health/100.0f), 4, RED);
+                  size * 2 * (health/100.0f), 4, ColorAlpha(RED, 0.8f));
     DrawText(TextFormat("H:%.0f", health),
-             position.x - size - 35, position.y - size - 10, 6, RED);
+             position.x - size - 35, position.y - size - 10, 6, ColorAlpha(RED, 0.8f));
     
-    // Draw energy bar and value
+    // Draw energy bar background and bar
+    DrawRectangle(position.x - size, position.y - size - 6,
+                  size * 2, 4, ColorAlpha(YELLOW, 0.2f));
     DrawRectangle(position.x - size, position.y - size - 6, 
-                  size * 2 * (energy/100.0f), 4, YELLOW);
+                  size * 2 * (energy/100.0f), 4, ColorAlpha(YELLOW, 0.8f));
     DrawText(TextFormat("E:%.0f", energy),
-             position.x + size * 2 - 2, position.y - size - 10, 6, YELLOW);
+             position.x + size * 2 - 2, position.y - size - 10, 6, ColorAlpha(YELLOW, 0.8f));
 
     
     // Draw strength indicator (outline thickness)
