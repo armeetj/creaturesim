@@ -15,9 +15,10 @@ class Creature {
 public:
     Creature(Vector2 pos, float size);
     
-    void Update(float deltaTime, const std::vector<Creature>& others);
+    void Update(float deltaTime, const std::vector<Creature>& others, std::vector<Food>& foods);
     void Draw() const;
     bool IsAlive() const { return health > 0; }
+    Vector2 GetPosition() const { return position; }
     
 private:
     Vector2 position;

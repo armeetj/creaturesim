@@ -42,8 +42,15 @@ int main() {
             
             // Update all creatures
             for (auto& creature : creatures) {
-                creature.Update(fixedDeltaTime, creatures);
+                creature.Update(fixedDeltaTime, creatures, foods);
             }
+            
+            // Remove consumed food
+            foods.erase(
+                std::remove_if(foods.begin(), foods.end(),
+                    [](const Food& f) { return f.IsConsumed(); }),
+                foods.end()
+            );
             
             // Remove dead creatures
             creatures.erase(

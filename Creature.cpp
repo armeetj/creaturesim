@@ -16,7 +16,7 @@ Creature::Creature(Vector2 pos, float size)
     , metabolism((float)GetRandomValue(50, 150) / 100.0f) {
 }
 
-void Creature::Update(float deltaTime, const std::vector<Creature>& others) {
+void Creature::Update(float deltaTime, const std::vector<Creature>& others, std::vector<Food>& foods) {
     age += deltaTime;
     energy -= deltaTime * 2 * metabolism; // Consume energy based on metabolism
     
@@ -24,6 +24,26 @@ void Creature::Update(float deltaTime, const std::vector<Creature>& others) {
         health -= deltaTime * 5;
     }
     
+    // Try to eat if hungry
+    if (state == CreatureState::HUNTING) {
+        for (auto& food : foods) {
+            if (!food.IsConsumed()) {
+                Vector2 foodPos = food.GetPosition();
+                float dx = position.x - foodPos.x;
+                float dy = position.y - foodPos.y;
+                float distance = sqrt(dx*dx + dy*dy);
+                
+                if (distance < size * 2) {
+                    food.Consume();
+                    energy += 30;
+                    if (energy > 100) energy = 100;
+                    state = CreatureState::EATING;
+                    break;
+                }
+            }
+        }
+    }
+
     UpdateState(others);
     UpdateMovement(deltaTime);
     UpdateColor();
@@ -58,11 +78,23 @@ void Creature::UpdateMovement(float deltaTime) {
     position.x += velocity.x * deltaTime * 30.0f * speed;
     position.y += velocity.y * deltaTime * 30.0f * speed;
     
-    // Keep in bounds
-    if (position.x < 0) position.x = 0;
-    if (position.x > GetScreenWidth()) position.x = GetScreenWidth();
-    if (position.y < 0) position.y = 0;
-    if (position.y > GetScreenHeight()) position.y = GetScreenHeight();
+    // Bounce off boundaries
+    if (position.x < 0) {
+        position.x = 0;
+        velocity.x *= -0.8f;
+    }
+    if (position.x > GetScreenWidth()) {
+        position.x = GetScreenWidth();
+        velocity.x *= -0.8f;
+    }
+    if (position.y < 0) {
+        position.y = 0;
+        velocity.y *= -0.8f;
+    }
+    if (position.y > GetScreenHeight()) {
+        position.y = GetScreenHeight();
+        velocity.y *= -0.8f;
+    }
 }
 
 void Creature::UpdateColor() {
