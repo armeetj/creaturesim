@@ -208,4 +208,9 @@ void Creature::Draw() const {
     // Draw strength indicator (outline thickness)
     DrawPolyLines(position, isMale ? 3 : 6, size, rotation + 90.0f, 
                   ColorAlpha(WHITE, strength/100.0f));
+                  
+    // Draw selection indicator
+    if (selected) {
+        DrawCircleLines(position.x, position.y, size * 1.5f, WHITE);
+    }
 }

@@ -3,6 +3,7 @@
 #include "Food.h"
 #include "Constants.h"
 #include <vector>
+#include <cmath>
 
 int main() {
     const int screenWidth = Constants::SCREEN_WIDTH;
@@ -29,6 +30,8 @@ int main() {
         0.0f,                                   // rotation
         1.0f                                    // zoom
     };
+    
+    Creature* selectedCreature = nullptr;
     
     // For smooth zooming
     float targetZoom = 1.0f;
@@ -66,11 +69,40 @@ int main() {
         // Smooth zoom interpolation
         camera.zoom = Lerp(camera.zoom, targetZoom, 0.1f);
         
-        // Pan with middle mouse button or by dragging with left mouse button
-        if (IsMouseButtonDown(MOUSE_BUTTON_LEFT)) {
+        // Handle creature selection
+        if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
+            Vector2 mouseWorldPos = GetScreenToWorld2D(GetMousePosition(), camera);
+            
+            // Deselect current creature
+            if (selectedCreature) {
+                selectedCreature->SetSelected(false);
+                selectedCreature = nullptr;
+            }
+            
+            // Check if clicked on a creature
+            for (auto& creature : creatures) {
+                Vector2 pos = creature.GetPosition();
+                float dist = sqrt(pow(mouseWorldPos.x - pos.x, 2) + 
+                                pow(mouseWorldPos.y - pos.y, 2));
+                if (dist < Constants::INITIAL_CREATURE_SIZE) {
+                    selectedCreature = &creature;
+                    creature.SetSelected(true);
+                    break;
+                }
+            }
+        }
+        
+        // Pan with middle mouse button
+        if (IsMouseButtonDown(MOUSE_BUTTON_MIDDLE)) {
             Vector2 delta = GetMouseDelta();
             camera.target.x -= (delta.x / camera.zoom);
             camera.target.y -= (delta.y / camera.zoom);
+        }
+        
+        // Update camera to follow selected creature
+        if (selectedCreature) {
+            Vector2 pos = selectedCreature->GetPosition();
+            camera.target = Vector2Lerp(camera.target, pos, 0.1f);
         }
 
         accumulator += GetFrameTime();

@@ -25,6 +25,8 @@ public:
     const std::string& GetName() const { return name; }
     float GetHealth() const { return health; }
     float GetEnergy() const { return energy; }
+    void SetSelected(bool select) { selected = select; }
+    bool IsSelected() const { return selected; }
     
 private:
     Vector2 position;
@@ -43,6 +45,7 @@ private:
     float strength;     // Affects fighting success (0-100)
     float speed;        // Affects movement speed (0.5-1.5)
     float metabolism;   // Affects energy consumption rate (0.5-1.5)
+    bool selected = false;
     
     void UpdateState(const std::vector<Creature>& others);
     void UpdateMovement(float deltaTime);
