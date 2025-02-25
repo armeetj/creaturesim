@@ -24,6 +24,7 @@ public:
 private:
     Vector2 position;
     Vector2 velocity;
+    float rotation;    // Facing direction in degrees
     float size;        // Affects strength and visibility
     float health;
     float energy;

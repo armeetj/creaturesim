@@ -6,6 +6,7 @@
 Creature::Creature(Vector2 pos, float size) 
     : position(pos)
     , velocity({0, 0})
+    , rotation(0.0f)
     , size(size)
     , health(Constants::INITIAL_HEALTH)
     , energy(Constants::INITIAL_ENERGY)
@@ -106,8 +107,14 @@ void Creature::UpdateMovement(float deltaTime) {
         velocity.y = (velocity.y / speed) * Constants::MAX_VELOCITY;
     }
     
+    // Update position
     position.x += velocity.x * deltaTime * Constants::BASE_MOVEMENT_SPEED * speed;
     position.y += velocity.y * deltaTime * Constants::BASE_MOVEMENT_SPEED * speed;
+    
+    // Update rotation to face movement direction
+    if (speed > 0.1f) {  // Only update rotation if moving significantly
+        rotation = atan2f(velocity.y, velocity.x) * RAD2DEG;
+    }
     
     // Bounce off boundaries
     if (position.x < 0) {
@@ -162,7 +169,7 @@ void Creature::Draw() const {
              position.x - size, position.y - size - 30, 10, WHITE);
 
     // Draw creature body
-    DrawPoly(position, isMale ? 3 : 6, size, 0, color);
+    DrawPoly(position, isMale ? 3 : 6, size, rotation + 90.0f, color);
     
     // Draw health bar
     DrawRectangle(position.x - size, position.y - size - 10, 
@@ -173,6 +180,6 @@ void Creature::Draw() const {
                   size * 2 * (energy/100.0f), 4, YELLOW);
     
     // Draw strength indicator (outline thickness)
-    DrawPolyLines(position, isMale ? 3 : 6, size, 0, 
+    DrawPolyLines(position, isMale ? 3 : 6, size, rotation + 90.0f, 
                   ColorAlpha(WHITE, strength/100.0f));
 }
