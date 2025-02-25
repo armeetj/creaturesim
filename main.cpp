@@ -173,6 +173,15 @@ int main() {
         Rectangle{0, 0, (float)GetScreenWidth(), (float)GetScreenHeight()}, 2,
         borderColor);
 
+    // Draw grid dots
+    int gridSpacing = 50;  // Adjust for dot density
+    Color dotColor = ColorAlpha(GRAY, 0.2f);
+    for (int x = 0; x < GetScreenWidth(); x += gridSpacing) {
+        for (int y = 0; y < GetScreenHeight(); y += gridSpacing) {
+            DrawCircle(x, y, 2, dotColor);
+        }
+    }
+
     // Draw food
     for (const auto &food : foods) {
       food.Draw();
