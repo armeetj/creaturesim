@@ -27,7 +27,7 @@ float Clamp(float value, float min, float max) {
     return value;
 }
 
-void Creature::Update(float deltaTime, const std::vector<Creature>& others, std::vector<Food>& foods) {
+void Creature::Update(float deltaTime, const std::vector<Creature>& others, std::vector<Food>& foods, std::vector<Creature>& allCreatures) {
     age += deltaTime;
     energy -= deltaTime * Constants::ENERGY_CONSUMPTION_RATE * metabolism;
     
@@ -82,7 +82,7 @@ void Creature::Update(float deltaTime, const std::vector<Creature>& others, std:
         }
     }
 
-    UpdateState(others, allCreatures);
+    UpdateState(others, allCreatures);  // Now allCreatures is properly passed in
     UpdateMovement(deltaTime);
     UpdateColor();
 }
@@ -139,8 +139,8 @@ void Creature::UpdateState(const std::vector<Creature>& others, std::vector<Crea
                     mixMetabolism = Clamp(mixMetabolism, Constants::MIN_METABOLISM, Constants::MAX_METABOLISM);
                     
                     // Create new creature
-                    creatures.emplace_back(newPos, size);
-                    auto& child = creatures.back();
+                    allCreatures.emplace_back(newPos, size);
+                    auto& child = allCreatures.back();
                     child.strength = mixStrength;
                     child.speed = mixSpeed;
                     child.metabolism = mixMetabolism;
