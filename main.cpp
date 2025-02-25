@@ -5,6 +5,8 @@
 #include <cmath>
 #include <vector>
 
+float simulationSpeed = 1.0f;  // Global simulation speed multiplier
+
 int main() {
   const int screenWidth = Constants::SCREEN_WIDTH;
   const int screenHeight = Constants::SCREEN_HEIGHT;
