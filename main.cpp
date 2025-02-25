@@ -1,5 +1,6 @@
 #include "raylib.h"
 #include "Creature.h"
+#include "Food.h"
 #include <vector>
 
 int main() {
@@ -11,8 +12,11 @@ int main() {
     const float fixedDeltaTime = 1.0f/60.0f;
     float accumulator = 0.0f;
 
-    // Create initial creatures
     std::vector<Creature> creatures;
+    std::vector<Food> foods;
+    
+    float foodSpawnTimer = 0;
+    const float foodSpawnInterval = 1.0f;
     for (int i = 0; i < 30; i++) {
         Vector2 pos = {
             (float)GetRandomValue(0, screenWidth),
@@ -25,6 +29,17 @@ int main() {
         accumulator += GetFrameTime();
 
         while (accumulator >= fixedDeltaTime) {
+            // Spawn food periodically
+            foodSpawnTimer += fixedDeltaTime;
+            if (foodSpawnTimer >= foodSpawnInterval) {
+                Vector2 foodPos = {
+                    (float)GetRandomValue(0, screenWidth),
+                    (float)GetRandomValue(0, screenHeight)
+                };
+                foods.emplace_back(foodPos);
+                foodSpawnTimer = 0;
+            }
+            
             // Update all creatures
             for (auto& creature : creatures) {
                 creature.Update(fixedDeltaTime, creatures);
@@ -43,7 +58,12 @@ int main() {
         BeginDrawing();
             ClearBackground(BLACK);
             
-            // Draw all creatures
+            // Draw food
+            for (const auto& food : foods) {
+                food.Draw();
+            }
+            
+            // Draw creatures
             for (const auto& creature : creatures) {
                 creature.Draw();
             }

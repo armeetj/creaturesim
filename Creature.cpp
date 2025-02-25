@@ -9,12 +9,16 @@ Creature::Creature(Vector2 pos, float size)
     , energy(100)
     , age(0)
     , state(CreatureState::WANDERING)
-    , color(GREEN) {
+    , color(GREEN)
+    , isMale(GetRandomValue(0, 1) == 1)
+    , strength(GetRandomValue(40, 100))
+    , speed((float)GetRandomValue(50, 150) / 100.0f)
+    , metabolism((float)GetRandomValue(50, 150) / 100.0f) {
 }
 
 void Creature::Update(float deltaTime, const std::vector<Creature>& others) {
     age += deltaTime;
-    energy -= deltaTime * 2; // Consume energy over time
+    energy -= deltaTime * 2 * metabolism; // Consume energy based on metabolism
     
     if (energy < 0) {
         health -= deltaTime * 5;
@@ -45,13 +49,14 @@ void Creature::UpdateMovement(float deltaTime) {
     
     // Limit velocity
     float speed = sqrt(velocity.x * velocity.x + velocity.y * velocity.y);
-    if (speed > 5.0f) {
-        velocity.x = (velocity.x / speed) * 5.0f;
-        velocity.y = (velocity.y / speed) * 5.0f;
+    float maxSpeed = 5.0f * speed; // Use speed trait
+    if (speed > maxSpeed) {
+        velocity.x = (velocity.x / speed) * maxSpeed;
+        velocity.y = (velocity.y / speed) * maxSpeed;
     }
     
-    position.x += velocity.x * deltaTime * 60.0f;
-    position.y += velocity.y * deltaTime * 60.0f;
+    position.x += velocity.x * deltaTime * 60.0f * speed;
+    position.y += velocity.y * deltaTime * 60.0f * speed;
     
     // Keep in bounds
     if (position.x < 0) position.x = 0;
@@ -76,9 +81,18 @@ Color Creature::GetStateColor() const {
 }
 
 void Creature::Draw() const {
-    DrawPoly(position, 6, size, 0, color);
+    // Draw creature body
+    DrawPoly(position, isMale ? 3 : 6, size, 0, color);
     
     // Draw health bar
     DrawRectangle(position.x - size, position.y - size - 10, 
                   size * 2 * (health/100.0f), 4, RED);
+    
+    // Draw energy bar
+    DrawRectangle(position.x - size, position.y - size - 6, 
+                  size * 2 * (energy/100.0f), 4, YELLOW);
+    
+    // Draw strength indicator (outline thickness)
+    DrawPolyLines(position, isMale ? 3 : 6, size, 0, 
+                  ColorAlpha(WHITE, strength/100.0f));
 }

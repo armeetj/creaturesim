@@ -22,19 +22,18 @@ public:
 private:
     Vector2 position;
     Vector2 velocity;
-    float size;
+    float size;        // Affects strength and visibility
     float health;
     float energy;
     float age;
     CreatureState state;
     Color color;
     
-    // New traits
+    // Traits
     bool isMale;
-    float strength;     // Affects fighting success
-    float speed;        // Affects movement speed
-    float size;        // Already existed but now affects strength
-    float metabolism;   // Affects energy consumption rate
+    float strength;     // Affects fighting success (0-100)
+    float speed;        // Affects movement speed (0.5-1.5)
+    float metabolism;   // Affects energy consumption rate (0.5-1.5)
     
     void UpdateState(const std::vector<Creature>& others);
     void UpdateMovement(float deltaTime);
