@@ -101,24 +101,43 @@ void Creature::UpdateState(const std::vector<Creature>& others, std::vector<Crea
         }
     } else if (energy < Constants::HUNGRY_THRESHOLD) {
         // Hunting is highest priority when hungry
-        // Check for food competition
-        for (const auto& other : others) {
-            if (&other != this && other.state == CreatureState::HUNTING) {
-                Vector2 otherPos = other.GetPosition();
-                float dx = position.x - otherPos.x;
-                float dy = position.y - otherPos.y;
-                float dist = sqrt(dx*dx + dy*dy);
-                
-                if (dist < size * 2) {  // Close enough to fight
-                    if (GetFightProbability(other) > 0.5f) {
-                        state = CreatureState::FIGHTING;
-                        Fight(const_cast<Creature&>(other));
-                        break;
+        bool foundFood = false;
+        
+        // First, check for available food
+        for (const auto& food : foods) {
+            if (!food.IsConsumed()) {
+                foundFood = true;
+                break;
+            }
+        }
+        
+        // If no food, look for creatures eating
+        if (!foundFood) {
+            for (const auto& other : others) {
+                if (&other != this && other.state == CreatureState::EATING) {
+                    Vector2 otherPos = other.GetPosition();
+                    float dx = position.x - otherPos.x;
+                    float dy = position.y - otherPos.y;
+                    float dist = sqrt(dx*dx + dy*dy);
+                    
+                    if (dist < size * 2) {  // Close enough to fight
+                        if (GetFightProbability(other) > 0.5f) {
+                            state = CreatureState::FIGHTING;
+                            Fight(const_cast<Creature&>(other));
+                            
+                            // If fight is won, simulate getting the food energy
+                            if (energy < 0) {
+                                energy += Constants::FOOD_ENERGY_VALUE * 0.8f;
+                            }
+                            
+                            break;
+                        }
                     }
                 }
             }
         }
         
+        // If no successful fight, continue hunting
         if (state != CreatureState::FIGHTING) {
             state = CreatureState::HUNTING;
         }
