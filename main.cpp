@@ -10,14 +10,6 @@ int main() {
     InitWindow(screenWidth, screenHeight, "Creature Simulation");
     
     // Initialize camera
-    Camera2D camera = { 0 };
-    camera = {
-        {screenWidth/2.0f, screenHeight/2.0f},  // offset
-        {screenWidth/2.0f, screenHeight/2.0f},  // target
-        0.0f,                                   // rotation
-        1.0f                                    // zoom
-    };
-    
     // Helper functions for smooth camera movement
     auto Clamp = [](float value, float min, float max) -> float {
         if (value < min) return min;
@@ -28,10 +20,14 @@ int main() {
     auto Lerp = [](float start, float end, float amount) -> float {
         return start + amount * (end - start);
     };
-    camera.target = {screenWidth/2.0f, screenHeight/2.0f};
-    camera.offset = {screenWidth/2.0f, screenHeight/2.0f};
-    camera.rotation = 0.0f;
-    camera.zoom = 1.0f;
+
+    // Initialize camera
+    Camera2D camera = {
+        {screenWidth/2.0f, screenHeight/2.0f},  // offset
+        {screenWidth/2.0f, screenHeight/2.0f},  // target
+        0.0f,                                   // rotation
+        1.0f                                    // zoom
+    };
     
     // For smooth zooming
     float targetZoom = 1.0f;
@@ -68,8 +64,13 @@ int main() {
         if (IsMouseButtonDown(MOUSE_BUTTON_MIDDLE) || 
             (IsKeyDown(KEY_LEFT_ALT) && IsMouseButtonDown(MOUSE_BUTTON_LEFT))) {
             Vector2 delta = GetMouseDelta();
-            camera.target.x -= delta.x / camera.zoom;
-            camera.target.y -= delta.y / camera.zoom;
+            camera.target.x -= (delta.x / camera.zoom);
+            camera.target.y -= (delta.y / camera.zoom);
+            
+            // Keep camera within world bounds with some margin
+            float margin = 100.0f;
+            camera.target.x = Clamp(camera.target.x, -margin, screenWidth + margin);
+            camera.target.y = Clamp(camera.target.y, -margin, screenHeight + margin);
         }
 
         accumulator += GetFrameTime();
