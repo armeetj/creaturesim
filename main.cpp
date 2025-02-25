@@ -1,28 +1,29 @@
 #include "raylib.h"
 #include "Creature.h"
 #include "Food.h"
+#include "Constants.h"
 #include <vector>
 
 int main() {
-    const int screenWidth = 1200;
-    const int screenHeight = 800;
+    const int screenWidth = Constants::SCREEN_WIDTH;
+    const int screenHeight = Constants::SCREEN_HEIGHT;
     InitWindow(screenWidth, screenHeight, "Creature Simulation");
 
     // Physics timestep (60 updates per second)
-    const float fixedDeltaTime = 1.0f/60.0f;
+    const float fixedDeltaTime = Constants::PHYSICS_TIMESTEP;
     float accumulator = 0.0f;
 
     std::vector<Creature> creatures;
     std::vector<Food> foods;
     
     float foodSpawnTimer = 0;
-    const float foodSpawnInterval = 0.2f; // Spawn food 5x more frequently
-    for (int i = 0; i < 30; i++) {
+    const float foodSpawnInterval = Constants::FOOD_SPAWN_INTERVAL;
+    for (int i = 0; i < Constants::INITIAL_CREATURE_COUNT; i++) {
         Vector2 pos = {
             (float)GetRandomValue(0, screenWidth),
             (float)GetRandomValue(0, screenHeight)
         };
-        creatures.emplace_back(pos, 10.0f);
+        creatures.emplace_back(pos, Constants::INITIAL_CREATURE_SIZE);
     }
 
     while (!WindowShouldClose()) {
@@ -33,7 +34,7 @@ int main() {
             foodSpawnTimer += fixedDeltaTime;
             if (foodSpawnTimer >= foodSpawnInterval) {
                 // Spawn multiple food items each time
-                for (int i = 0; i < 3; i++) {
+                for (int i = 0; i < Constants::FOOD_SPAWN_COUNT; i++) {
                     Vector2 foodPos = {
                         (float)GetRandomValue(0, screenWidth),
                         (float)GetRandomValue(0, screenHeight)

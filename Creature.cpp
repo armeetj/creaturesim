@@ -1,27 +1,29 @@
 #include "Creature.h"
 #include <cmath>
 
+#include "Constants.h"
+
 Creature::Creature(Vector2 pos, float size) 
     : position(pos)
     , velocity({0, 0})
     , size(size)
-    , health(100)
-    , energy(100)
+    , health(Constants::INITIAL_HEALTH)
+    , energy(Constants::INITIAL_ENERGY)
     , age(0)
     , state(CreatureState::WANDERING)
     , color(GREEN)
     , isMale(GetRandomValue(0, 1) == 1)
-    , strength(GetRandomValue(40, 100))
-    , speed((float)GetRandomValue(50, 120) / 100.0f) // Cap max speed at 1.2
-    , metabolism((float)GetRandomValue(50, 150) / 100.0f) {
+    , strength(GetRandomValue(Constants::MIN_STRENGTH, Constants::MAX_STRENGTH))
+    , speed((float)GetRandomValue(Constants::MIN_SPEED * 100, Constants::MAX_SPEED * 100) / 100.0f)
+    , metabolism((float)GetRandomValue(Constants::MIN_METABOLISM * 100, Constants::MAX_METABOLISM * 100) / 100.0f) {
 }
 
 void Creature::Update(float deltaTime, const std::vector<Creature>& others, std::vector<Food>& foods) {
     age += deltaTime;
-    energy -= deltaTime * 2 * metabolism; // Consume energy based on metabolism
+    energy -= deltaTime * Constants::ENERGY_CONSUMPTION_RATE * metabolism;
     
     if (energy < 0) {
-        health -= deltaTime * 5;
+        health -= deltaTime * Constants::HEALTH_DECAY_RATE;
     }
     
     // Try to eat if hungry
@@ -46,8 +48,8 @@ void Creature::Update(float deltaTime, const std::vector<Creature>& others, std:
                 
                 if (distance < (size + Food::SIZE)) {
                     food.Consume();
-                    energy += 30;
-                    if (energy > 100) energy = 100;
+                    energy += Constants::FOOD_ENERGY_VALUE;
+                    if (energy > Constants::INITIAL_ENERGY) energy = Constants::INITIAL_ENERGY;
                     state = CreatureState::EATING;
                     break;
                 }
@@ -60,8 +62,8 @@ void Creature::Update(float deltaTime, const std::vector<Creature>& others, std:
             float dy = nearestFoodPos.y - position.y;
             float dist = sqrt(dx*dx + dy*dy);
             if (dist > 0) {
-                velocity.x += (dx/dist) * 0.5f;
-                velocity.y += (dy/dist) * 0.5f;
+                velocity.x += (dx/dist) * Constants::FOOD_SEEK_FORCE;
+                velocity.y += (dy/dist) * Constants::FOOD_SEEK_FORCE;
             }
         }
     }
@@ -73,16 +75,16 @@ void Creature::Update(float deltaTime, const std::vector<Creature>& others, std:
 
 void Creature::UpdateState(const std::vector<Creature>& others) {
     // Priority-based state machine
-    if (energy < 30 || state == CreatureState::EATING) {
+    if (energy < Constants::HUNGRY_THRESHOLD || state == CreatureState::EATING) {
         // Eating is highest priority when hungry
         state = CreatureState::HUNTING;
-    } else if (health < 40) {
+    } else if (health < Constants::CRITICAL_HEALTH) {
         // Very low health is an emergency
         state = CreatureState::SICK;
-    } else if (energy > 60 && age > 10) {
+    } else if (energy > Constants::MATING_ENERGY && age > Constants::MATING_AGE) {
         // Mating is high priority when healthy and mature
         state = CreatureState::MATING;
-    } else if (health < 70) {
+    } else if (health < Constants::LOW_HEALTH) {
         // Rest when somewhat injured
         state = CreatureState::SICK;
     } else {
@@ -99,19 +101,19 @@ void Creature::UpdateMovement(float deltaTime) {
     
     // Limit velocity
     float speed = sqrt(velocity.x * velocity.x + velocity.y * velocity.y);
-    float maxSpeed = 2.0f * speed; // Use speed trait
+    float maxSpeed = Constants::MAX_VELOCITY * speed;
     if (speed > maxSpeed) {
         velocity.x = (velocity.x / speed) * maxSpeed;
         velocity.y = (velocity.y / speed) * maxSpeed;
     }
     
-    position.x += velocity.x * deltaTime * 30.0f * speed;
-    position.y += velocity.y * deltaTime * 30.0f * speed;
+    position.x += velocity.x * deltaTime * Constants::BASE_MOVEMENT_SPEED * speed;
+    position.y += velocity.y * deltaTime * Constants::BASE_MOVEMENT_SPEED * speed;
     
     // Bounce off boundaries
     if (position.x < 0) {
         position.x = 0;
-        velocity.x *= -0.8f;
+        velocity.x *= Constants::BOUNDARY_BOUNCE;
     }
     if (position.x > GetScreenWidth()) {
         position.x = GetScreenWidth();
