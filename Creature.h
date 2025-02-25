@@ -32,8 +32,12 @@ public:
     float GetSpeed() const { return speed; }
     float GetMetabolism() const { return metabolism; }
     bool IsMale() const { return isMale; }
+    void Fight(Creature& opponent);
+    float GetFightProbability(const Creature& opponent) const;
     
 private:
+    Creature* lastFightOpponent = nullptr;
+    float timeSinceLastFight = 0.0f;
     Vector2 position;
     Vector2 velocity;
     float rotation;    // Facing direction in degrees

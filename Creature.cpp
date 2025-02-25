@@ -88,6 +88,8 @@ void Creature::Update(float deltaTime, const std::vector<Creature>& others, std:
 }
 
 void Creature::UpdateState(const std::vector<Creature>& others, std::vector<Creature>& allCreatures) {
+    timeSinceLastFight += GetFrameTime();
+
     // Priority-based state machine
     if (state == CreatureState::EATING) {
         // Stay in eating state for a short duration
@@ -99,12 +101,32 @@ void Creature::UpdateState(const std::vector<Creature>& others, std::vector<Crea
         }
     } else if (energy < Constants::HUNGRY_THRESHOLD) {
         // Hunting is highest priority when hungry
-        state = CreatureState::HUNTING;
+        // Check for food competition
+        for (const auto& other : others) {
+            if (&other != this && other.state == CreatureState::HUNTING) {
+                Vector2 otherPos = other.GetPosition();
+                float dx = position.x - otherPos.x;
+                float dy = position.y - otherPos.y;
+                float dist = sqrt(dx*dx + dy*dy);
+                
+                if (dist < size * 2) {  // Close enough to fight
+                    if (GetFightProbability(other) > 0.5f) {
+                        state = CreatureState::FIGHTING;
+                        Fight(const_cast<Creature&>(other));
+                        break;
+                    }
+                }
+            }
+        }
+        
+        if (state != CreatureState::FIGHTING) {
+            state = CreatureState::HUNTING;
+        }
     } else if (health < Constants::CRITICAL_HEALTH) {
         // Very low health is an emergency
         state = CreatureState::SICK;
     } else if (energy > Constants::MATING_ENERGY && age > Constants::MATING_AGE) {
-        // Check for nearby potential mates
+        // Check for nearby potential mates and competition
         for (const auto& other : others) {
             if (&other != this && 
                 other.GetEnergy() > Constants::MATING_ENERGY && 
@@ -116,40 +138,51 @@ void Creature::UpdateState(const std::vector<Creature>& others, std::vector<Crea
                 float dy = position.y - otherPos.y;
                 float dist = sqrt(dx*dx + dy*dy);
                 
-                if (dist < size * 3) {  // Close enough to mate
-                    // Create new creature with mixed traits
-                    Vector2 newPos = {
-                        (position.x + otherPos.x) / 2,
-                        (position.y + otherPos.y) / 2
-                    };
+                if (dist < size * 3) {  // Close enough to compete
+                    // If another male is nearby, fight for mating rights
+                    if (!isMale && other.IsMale()) {
+                        if (GetFightProbability(other) > 0.5f) {
+                            state = CreatureState::FIGHTING;
+                            Fight(const_cast<Creature&>(other));
+                            break;
+                        }
+                    }
                     
-                    // Mix parents' traits with some variation
-                    float mixStrength = (strength + other.GetStrength()) / 2;
-                    float mixSpeed = (speed + other.GetSpeed()) / 2;
-                    float mixMetabolism = (metabolism + other.GetMetabolism()) / 2;
-                    
-                    // Add some random variation (-10% to +10%)
-                    mixStrength *= (1.0f + (GetRandomValue(-10, 10) / 100.0f));
-                    mixSpeed *= (1.0f + (GetRandomValue(-10, 10) / 100.0f));
-                    mixMetabolism *= (1.0f + (GetRandomValue(-10, 10) / 100.0f));
-                    
-                    // Clamp values
-                    mixStrength = Clamp(mixStrength, Constants::MIN_STRENGTH, Constants::MAX_STRENGTH);
-                    mixSpeed = Clamp(mixSpeed, Constants::MIN_SPEED, Constants::MAX_SPEED);
-                    mixMetabolism = Clamp(mixMetabolism, Constants::MIN_METABOLISM, Constants::MAX_METABOLISM);
-                    
-                    // Create new creature
-                    allCreatures.emplace_back(newPos, size);
-                    auto& child = allCreatures.back();
-                    child.strength = mixStrength;
-                    child.speed = mixSpeed;
-                    child.metabolism = mixMetabolism;
-                    
-                    // Reset energy after reproduction
-                    energy *= 0.7f;  // Cost of reproduction
-                    
-                    state = CreatureState::MATING;
-                    break;
+                    // Proceed with mating if no fight occurs
+                    if (state != CreatureState::FIGHTING) {
+                        Vector2 newPos = {
+                            (position.x + otherPos.x) / 2,
+                            (position.y + otherPos.y) / 2
+                        };
+                        
+                        // Mix parents' traits with some variation
+                        float mixStrength = (strength + other.GetStrength()) / 2;
+                        float mixSpeed = (speed + other.GetSpeed()) / 2;
+                        float mixMetabolism = (metabolism + other.GetMetabolism()) / 2;
+                        
+                        // Add some random variation (-10% to +10%)
+                        mixStrength *= (1.0f + (GetRandomValue(-10, 10) / 100.0f));
+                        mixSpeed *= (1.0f + (GetRandomValue(-10, 10) / 100.0f));
+                        mixMetabolism *= (1.0f + (GetRandomValue(-10, 10) / 100.0f));
+                        
+                        // Clamp values
+                        mixStrength = Clamp(mixStrength, Constants::MIN_STRENGTH, Constants::MAX_STRENGTH);
+                        mixSpeed = Clamp(mixSpeed, Constants::MIN_SPEED, Constants::MAX_SPEED);
+                        mixMetabolism = Clamp(mixMetabolism, Constants::MIN_METABOLISM, Constants::MAX_METABOLISM);
+                        
+                        // Create new creature
+                        allCreatures.emplace_back(newPos, size);
+                        auto& child = allCreatures.back();
+                        child.strength = mixStrength;
+                        child.speed = mixSpeed;
+                        child.metabolism = mixMetabolism;
+                        
+                        // Reset energy after reproduction
+                        energy *= 0.7f;  // Cost of reproduction
+                        
+                        state = CreatureState::MATING;
+                        break;
+                    }
                 }
             }
         }
@@ -220,8 +253,48 @@ Color Creature::GetStateColor() const {
         case CreatureState::MATING: return PINK;
         case CreatureState::SICK: return PURPLE;
         case CreatureState::EATING: return ORANGE;
+        case CreatureState::FIGHTING: return MAROON;
         default: return WHITE;
     }
+}
+
+void Creature::Fight(Creature& opponent) {
+    // Determine fight outcome based on strength
+    float fightProbability = GetFightProbability(opponent);
+    
+    if (GetRandomValue(0, 100) / 100.0f < fightProbability) {
+        // Winner gets energy and health boost
+        energy += 10.0f;
+        health += 5.0f;
+        
+        // Loser loses energy and health
+        opponent.energy -= 15.0f;
+        opponent.health -= 10.0f;
+    } else {
+        // Loser scenario
+        energy -= 15.0f;
+        health -= 10.0f;
+        
+        // Winner gets energy and health boost
+        opponent.energy += 10.0f;
+        opponent.health += 5.0f;
+    }
+    
+    // Reset fight timer
+    timeSinceLastFight = 0.0f;
+    lastFightOpponent = &opponent;
+}
+
+float Creature::GetFightProbability(const Creature& opponent) const {
+    // Calculate fight probability based on strength difference
+    float strengthDiff = strength - opponent.strength;
+    float baseProbability = 0.5f + (strengthDiff / (Constants::MAX_STRENGTH * 2));
+    
+    // Add some randomness
+    baseProbability += (GetRandomValue(-10, 10) / 100.0f);
+    
+    // Clamp probability between 0 and 1
+    return Clamp(baseProbability, 0.0f, 1.0f);
 }
 
 void Creature::Draw(int rank) const {
@@ -265,9 +338,10 @@ void Creature::Draw(int rank) const {
              position.x + size * 2 - 2, position.y - size - 10, 6, ColorAlpha(YELLOW, 0.8f));
 
     
-    // Draw strength indicator (outline thickness)
-    DrawPolyLines(position, isMale ? 3 : 6, size, rotation + 90.0f, 
-                  ColorAlpha(WHITE, strength/100.0f));
+    // Draw strength indicator with thicker outline
+    float outlineThickness = 2.0f + (strength / 50.0f);  // More pronounced thickness
+    DrawPolyLinesEx(position, isMale ? 3 : 6, size, outlineThickness, rotation + 90.0f, 
+                    ColorAlpha(WHITE, 0.7f));  // More visible
                   
     // Draw selection indicator
     if (selected) {
