@@ -143,7 +143,7 @@ int main() {
             
             // Update all creatures
             for (auto& creature : creatures) {
-                creature.Update(fixedDeltaTime, creatures, foods);
+                creature.Update(fixedDeltaTime, creatures, foods, creatures);
             }
             
             // Remove consumed food

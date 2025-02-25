@@ -82,7 +82,7 @@ void Creature::Update(float deltaTime, const std::vector<Creature>& others, std:
         }
     }
 
-    UpdateState(others, foods);  // Temporarily passing foods instead of creatures
+    UpdateState(others, allCreatures);
     UpdateMovement(deltaTime);
     UpdateColor();
 }
