@@ -3,10 +3,11 @@ CFLAGS = -Wall -std=c++11 -I/opt/homebrew/include
 LIBS = -L/opt/homebrew/lib -lraylib
 
 TARGET = game
-SOURCE = main.cpp
+SOURCES = main.cpp Creature.cpp
+HEADERS = Creature.h
 
-$(TARGET): $(SOURCE)
-	$(CC) $(SOURCE) $(CFLAGS) -o $(TARGET) $(LIBS)
+$(TARGET): $(SOURCES) $(HEADERS)
+	$(CC) $(SOURCES) $(CFLAGS) -o $(TARGET) $(LIBS)
 
 .PHONY: run clean
 

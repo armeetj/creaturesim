@@ -1,45 +1,56 @@
 #include "raylib.h"
+#include "Creature.h"
+#include <vector>
 
 int main() {
-    // Initialize window
     const int screenWidth = 800;
     const int screenHeight = 450;
-    InitWindow(screenWidth, screenHeight, "Bouncing Ball Game");
+    InitWindow(screenWidth, screenHeight, "Creature Simulation");
 
     // Physics timestep (60 updates per second)
     const float fixedDeltaTime = 1.0f/60.0f;
     float accumulator = 0.0f;
 
-    // Ball properties
-    Vector2 ballPosition = { screenWidth/2.0f, screenHeight/2.0f };
-    Vector2 ballSpeed = { 5.0f, 4.0f };
-    float ballRadius = 20;
+    // Create initial creatures
+    std::vector<Creature> creatures;
+    for (int i = 0; i < 10; i++) {
+        Vector2 pos = {
+            (float)GetRandomValue(0, screenWidth),
+            (float)GetRandomValue(0, screenHeight)
+        };
+        creatures.emplace_back(pos, 20.0f);
+    }
 
-    // Main game loop
     while (!WindowShouldClose()) {
-        // Accumulate time for physics updates
         accumulator += GetFrameTime();
 
-        // Update physics at a fixed time step
         while (accumulator >= fixedDeltaTime) {
-            // Update ball position
-            ballPosition.x += ballSpeed.x;
-            ballPosition.y += ballSpeed.y;
-
-            // Check walls collision
-            if ((ballPosition.x >= (screenWidth - ballRadius)) || 
-                (ballPosition.x <= ballRadius)) ballSpeed.x *= -1.0f;
-            if ((ballPosition.y >= (screenHeight - ballRadius)) || 
-                (ballPosition.y <= ballRadius)) ballSpeed.y *= -1.0f;
+            // Update all creatures
+            for (auto& creature : creatures) {
+                creature.Update(fixedDeltaTime, creatures);
+            }
+            
+            // Remove dead creatures
+            creatures.erase(
+                std::remove_if(creatures.begin(), creatures.end(),
+                    [](const Creature& c) { return !c.IsAlive(); }),
+                creatures.end()
+            );
 
             accumulator -= fixedDeltaTime;
         }
 
-        // Draw
         BeginDrawing();
             ClearBackground(RAYWHITE);
-            DrawCircleV(ballPosition, ballRadius, MAROON);
+            
+            // Draw all creatures
+            for (const auto& creature : creatures) {
+                creature.Draw();
+            }
+            
             DrawFPS(10, 10);
+            DrawText(TextFormat("Creatures: %d", (int)creatures.size()), 
+                    10, 30, 20, BLACK);
         EndDrawing();
     }
 
