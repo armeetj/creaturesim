@@ -182,10 +182,11 @@ void Creature::Draw() const {
         default: stateText = "Unknown";
     }
     
-    DrawText(TextFormat("%s %s\nE:%.0f H:%.0f", 
+    DrawText(TextFormat("%s %s\nE:%.0f H:%.0f\nStr:%.0f Spd:%.1f Met:%.1f", 
              isMale ? "♂" : "♀", stateText, 
-             energy, health),
-             position.x - size, position.y - size - 30, 10, WHITE);
+             energy, health,
+             strength, speed, metabolism),
+             position.x - size, position.y - size - 40, 10, WHITE);
 
     // Draw creature body
     DrawPoly(position, isMale ? 3 : 6, size, rotation + 90.0f, color);
