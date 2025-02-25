@@ -13,6 +13,7 @@ Creature::Creature(Vector2 pos, float size)
     , age(0)
     , state(CreatureState::WANDERING)
     , color(GREEN)
+    , name(Names::generate_name())
     , isMale(GetRandomValue(0, 1) == 1)
     , strength(GetRandomValue(Constants::MIN_STRENGTH, Constants::MAX_STRENGTH))
     , speed((float)GetRandomValue(Constants::MIN_SPEED * 100, Constants::MAX_SPEED * 100) / 100.0f)
@@ -182,8 +183,8 @@ void Creature::Draw() const {
         default: stateText = "Unknown";
     }
     
-    DrawText(TextFormat("%s %s", isMale ? "♂" : "♀", stateText),
-             position.x - size, position.y - size - 30, 10, WHITE);
+    DrawText(TextFormat("%s\n%s %s", name.c_str(), isMale ? "♂" : "♀", stateText),
+             position.x - size, position.y - size - 40, 10, WHITE);
 
     // Draw creature body
     DrawPoly(position, isMale ? 3 : 6, size, rotation + 90.0f, color);

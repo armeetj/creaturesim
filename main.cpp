@@ -141,6 +141,42 @@ int main() {
                     10, 30, 20, WHITE);
             DrawText(TextFormat("Zoom: %.2fx", camera.zoom),
                     10, 50, 20, WHITE);
+                    
+            // Draw leaderboard
+            const int BOARD_WIDTH = 200;
+            const int BOARD_PADDING = 10;
+            DrawRectangle(GetScreenWidth() - BOARD_WIDTH - BOARD_PADDING, 
+                         BOARD_PADDING, 
+                         BOARD_WIDTH, 
+                         120, 
+                         ColorAlpha(BLACK, 0.7f));
+            
+            DrawText("TOP CREATURES", 
+                    GetScreenWidth() - BOARD_WIDTH, 
+                    BOARD_PADDING + 5, 
+                    20, YELLOW);
+                    
+            // Sort creatures by health + energy
+            std::vector<std::reference_wrapper<const Creature>> sorted_creatures(creatures.begin(), creatures.end());
+            std::sort(sorted_creatures.begin(), sorted_creatures.end(),
+                     [](const Creature& a, const Creature& b) {
+                         return (a.GetHealth() + a.GetEnergy()) > (b.GetHealth() + b.GetEnergy());
+                     });
+            
+            // Show top 3
+            for (int i = 0; i < std::min(3, (int)sorted_creatures.size()); i++) {
+                const auto& creature = sorted_creatures[i];
+                DrawText(TextFormat("%d. %s", i + 1, creature.get().GetName().c_str()),
+                        GetScreenWidth() - BOARD_WIDTH,
+                        BOARD_PADDING + 30 + (i * 25),
+                        15, WHITE);
+                DrawText(TextFormat("H:%.0f E:%.0f", 
+                        creature.get().GetHealth(),
+                        creature.get().GetEnergy()),
+                        GetScreenWidth() - BOARD_WIDTH + 120,
+                        BOARD_PADDING + 30 + (i * 25),
+                        15, WHITE);
+            }
         EndDrawing();
     }
 

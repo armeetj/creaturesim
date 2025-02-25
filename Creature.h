@@ -1,7 +1,9 @@
 #pragma once
 #include "raylib.h"
 #include "Food.h"
+#include "names.h"
 #include <vector>
+#include <string>
 
 enum class CreatureState {
     WANDERING,
@@ -20,6 +22,9 @@ public:
     void Draw() const;
     bool IsAlive() const { return health > 0; }
     Vector2 GetPosition() const { return position; }
+    const std::string& GetName() const { return name; }
+    float GetHealth() const { return health; }
+    float GetEnergy() const { return energy; }
     
 private:
     Vector2 position;
@@ -33,6 +38,7 @@ private:
     Color color;
     
     // Traits
+    std::string name;   // Creature's unique name
     bool isMale;
     float strength;     // Affects fighting success (0-100)
     float speed;        // Affects movement speed (0.5-1.5)
