@@ -224,7 +224,7 @@ Color Creature::GetStateColor() const {
     }
 }
 
-void Creature::Draw() const {
+void Creature::Draw(int rank) const {
     // Draw status text
     const char* stateText;
     switch (state) {
@@ -237,7 +237,7 @@ void Creature::Draw() const {
         default: stateText = "Unknown";
     }
     
-    DrawText(TextFormat("%s [%.1fs]\n(%s)", name.c_str(), age, stateText),
+    DrawText(TextFormat("#%d %s [%.1fs]\n(%s)", rank, name.c_str(), age, stateText),
              position.x - size, position.y - size - 40, 10, WHITE);
 
     // Draw creature body

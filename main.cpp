@@ -55,13 +55,21 @@ int main() {
 
     while (!WindowShouldClose()) {
         // Toggle fullscreen with F11 or F
+        static bool wasFullscreen = false;
         if (IsKeyPressed(KEY_F11) || IsKeyPressed(KEY_F)) {
-            ToggleFullscreen();
+            if (IsWindowFullscreen()) {
+                ToggleFullscreen();
+                wasFullscreen = false;
+            } else {
+                ToggleFullscreen();
+                wasFullscreen = true;
+            }
         }
 
         // Reset view with spacebar
         if (IsKeyPressed(KEY_SPACE)) {
             camera.target = {0, 0};
+            camera.zoom = 1.0f;
             targetZoom = 1.0f;
         }
 
@@ -179,9 +187,22 @@ int main() {
                 food.Draw();
             }
             
-            // Draw creatures
+            // Sort creatures by age for rank
+            std::vector<std::reference_wrapper<const Creature>> ranked_creatures(creatures.begin(), creatures.end());
+            std::sort(ranked_creatures.begin(), ranked_creatures.end(),
+                     [](const Creature& a, const Creature& b) {
+                         return a.GetAge() > b.GetAge();
+                     });
+            
+            // Draw creatures with rank
             for (const auto& creature : creatures) {
-                creature.Draw();
+                // Find creature's rank
+                auto it = std::find_if(ranked_creatures.begin(), ranked_creatures.end(),
+                    [&creature](const std::reference_wrapper<const Creature>& ref) {
+                        return &ref.get() == &creature;
+                    });
+                int rank = std::distance(ranked_creatures.begin(), it) + 1;
+                creature.Draw(rank);
             }
             
             EndMode2D();
