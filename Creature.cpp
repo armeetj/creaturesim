@@ -25,13 +25,24 @@ void Creature::Update(float deltaTime, const std::vector<Creature>& others, std:
     }
     
     // Try to eat if hungry
-    if (state == CreatureState::HUNTING) {
+    if (state == CreatureState::HUNTING || state == CreatureState::EATING) {
+        bool foundFood = false;
+        Vector2 nearestFoodPos = {0, 0};
+        float nearestDist = INFINITY;
+
+        // Find nearest food
         for (auto& food : foods) {
             if (!food.IsConsumed()) {
                 Vector2 foodPos = food.GetPosition();
                 float dx = position.x - foodPos.x;
                 float dy = position.y - foodPos.y;
                 float distance = sqrt(dx*dx + dy*dy);
+                
+                if (distance < nearestDist) {
+                    nearestDist = distance;
+                    nearestFoodPos = foodPos;
+                    foundFood = true;
+                }
                 
                 if (distance < (size + Food::SIZE)) {
                     food.Consume();
@@ -40,6 +51,17 @@ void Creature::Update(float deltaTime, const std::vector<Creature>& others, std:
                     state = CreatureState::EATING;
                     break;
                 }
+            }
+        }
+
+        // Move towards nearest food if hunting
+        if (state == CreatureState::HUNTING && foundFood) {
+            float dx = nearestFoodPos.x - position.x;
+            float dy = nearestFoodPos.y - position.y;
+            float dist = sqrt(dx*dx + dy*dy);
+            if (dist > 0) {
+                velocity.x += (dx/dist) * 0.5f;
+                velocity.y += (dy/dist) * 0.5f;
             }
         }
     }
