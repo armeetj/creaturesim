@@ -83,7 +83,7 @@ void Creature::Update(float deltaTime, const std::vector<Creature>& others, std:
     }
 
     UpdateState(others, foods, allCreatures);  // Pass foods to UpdateState
-    UpdateMovement(deltaTime);
+    UpdateMovement(deltaTime, others);
     UpdateColor();
 }
 
@@ -213,7 +213,7 @@ void Creature::UpdateState(const std::vector<Creature>& others, std::vector<Food
     }
 }
 
-void Creature::UpdateMovement(float deltaTime) {
+void Creature::UpdateMovement(float deltaTime, const std::vector<Creature>& others) {
     // Don't move while eating
     if (state == CreatureState::EATING) {
         velocity = {0, 0};
@@ -222,7 +222,7 @@ void Creature::UpdateMovement(float deltaTime) {
     
     // Find the creature we're fighting or mating with
     Creature* interactionPartner = nullptr;
-    for (auto& other : others) {
+    for (const auto& other : others) {
         if (&other != this && (other.state == CreatureState::FIGHTING || other.state == CreatureState::MATING)) {
             Vector2 otherPos = other.GetPosition();
             float dx = position.x - otherPos.x;
@@ -233,7 +233,7 @@ void Creature::UpdateMovement(float deltaTime) {
                 // Move closer to interaction partner
                 velocity.x = (otherPos.x - position.x) / dist * Constants::BASE_MOVEMENT_SPEED;
                 velocity.y = (otherPos.y - position.y) / dist * Constants::BASE_MOVEMENT_SPEED;
-                interactionPartner = &other;
+                interactionPartner = const_cast<Creature*>(&other);
                 break;
             }
         }

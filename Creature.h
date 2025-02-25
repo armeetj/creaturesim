@@ -57,7 +57,7 @@ private:
     bool selected = false;
     
     void UpdateState(const std::vector<Creature>& others, std::vector<Food>& foods, std::vector<Creature>& allCreatures);
-    void UpdateMovement(float deltaTime);
+    void UpdateMovement(float deltaTime, const std::vector<Creature>& others);
     void UpdateColor();
     Color GetStateColor() const;
 };
