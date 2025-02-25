@@ -18,7 +18,7 @@ int main() {
             (float)GetRandomValue(0, screenWidth),
             (float)GetRandomValue(0, screenHeight)
         };
-        creatures.emplace_back(pos, 20.0f);
+        creatures.emplace_back(pos, 10.0f);
     }
 
     while (!WindowShouldClose()) {
@@ -41,7 +41,7 @@ int main() {
         }
 
         BeginDrawing();
-            ClearBackground(RAYWHITE);
+            ClearBackground(BLACK);
             
             // Draw all creatures
             for (const auto& creature : creatures) {
@@ -50,7 +50,7 @@ int main() {
             
             DrawFPS(10, 10);
             DrawText(TextFormat("Creatures: %d", (int)creatures.size()), 
-                    10, 30, 20, BLACK);
+                    10, 30, 20, WHITE);
         EndDrawing();
     }
 
