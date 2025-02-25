@@ -337,16 +337,23 @@ void Creature::Draw(int rank) const {
         default: stateText = "Unknown";
     }
     
+    // Determine color based on selection state
+    Color baseColor = color;
+    if (!selected) {
+        // Dim unselected creatures
+        baseColor = ColorAlpha(color, 0.3f);
+    }
+
     // Draw name with rank and status
-    Color nameColor = ColorAlpha(WHITE, 0.9f);
-    Color statusColor = ColorAlpha(LIGHTGRAY, 0.7f);
+    Color nameColor = ColorAlpha(WHITE, selected ? 0.9f : 0.3f);
+    Color statusColor = ColorAlpha(LIGHTGRAY, selected ? 0.7f : 0.2f);
     DrawText(TextFormat("#%d %s", rank, name.c_str()),
              position.x - size, position.y - size - 40, 10, nameColor);
     DrawText(TextFormat("[%.1fs]\n(%s)", age, stateText),
              position.x - size, position.y - size - 30, 8, statusColor);
 
     // Draw creature body
-    DrawPoly(position, isMale ? 3 : 6, size, rotation + 90.0f, color);
+    DrawPoly(position, isMale ? 3 : 6, size, rotation + 90.0f, baseColor);
     
     // Draw health bar background and bar
     DrawRectangle(position.x - size, position.y - size - 10,
