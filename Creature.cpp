@@ -100,10 +100,10 @@ void Creature::UpdateState(const std::vector<Creature>& others, std::vector<Food
 
     // Priority-based state machine
     if (state == CreatureState::EATING) {
-        // Stay in eating state for a short duration
+        // Stay in eating state for a very short duration
         static float eatTimer = 0;
         eatTimer += GetFrameTime();
-        if (eatTimer > 1.0f) {
+        if (eatTimer > 0.2f) {  // Reduced from 1.0f to 0.2f
             eatTimer = 0;
             state = CreatureState::WANDERING;
         }
