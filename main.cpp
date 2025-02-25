@@ -16,7 +16,7 @@ int main() {
     std::vector<Food> foods;
     
     float foodSpawnTimer = 0;
-    const float foodSpawnInterval = 1.0f;
+    const float foodSpawnInterval = 0.2f; // Spawn food 5x more frequently
     for (int i = 0; i < 30; i++) {
         Vector2 pos = {
             (float)GetRandomValue(0, screenWidth),
@@ -32,11 +32,14 @@ int main() {
             // Spawn food periodically
             foodSpawnTimer += fixedDeltaTime;
             if (foodSpawnTimer >= foodSpawnInterval) {
-                Vector2 foodPos = {
-                    (float)GetRandomValue(0, screenWidth),
-                    (float)GetRandomValue(0, screenHeight)
-                };
-                foods.emplace_back(foodPos);
+                // Spawn multiple food items each time
+                for (int i = 0; i < 3; i++) {
+                    Vector2 foodPos = {
+                        (float)GetRandomValue(0, screenWidth),
+                        (float)GetRandomValue(0, screenHeight)
+                    };
+                    foods.emplace_back(foodPos);
+                }
                 foodSpawnTimer = 0;
             }
             
