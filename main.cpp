@@ -221,6 +221,14 @@ int main() {
              WHITE);
     DrawText(TextFormat("Zoom: %.2fx", camera.zoom), 10, 50, 20, WHITE);
 
+    // Sort creatures by age
+    std::vector<std::reference_wrapper<const Creature>> sorted_creatures(
+        creatures.begin(), creatures.end());
+    std::sort(sorted_creatures.begin(), sorted_creatures.end(),
+              [](const Creature &a, const Creature &b) {
+                return a.GetAge() > b.GetAge();
+              });
+
     // Draw leaderboard
     const int BOARD_WIDTH = 200;
     const int BOARD_PADDING = 10;
@@ -247,15 +255,7 @@ int main() {
              GetScreenWidth() - BOARD_WIDTH, BOARD_PADDING + 25,
              15, LIGHTGRAY);
 
-    // Sort creatures by age
-    std::vector<std::reference_wrapper<const Creature>> sorted_creatures(
-        creatures.begin(), creatures.end());
-    std::sort(sorted_creatures.begin(), sorted_creatures.end(),
-              [](const Creature &a, const Creature &b) {
-                return a.GetAge() > b.GetAge();
-              });
-
-    // Show top
+    // Show top creatures
     for (int i = 0; i < std::min(10, (int)sorted_creatures.size()); i++) {
       const auto &creature = sorted_creatures[i];
       DrawText(TextFormat("%d. %s", i + 1, creature.get().GetName().c_str()),
