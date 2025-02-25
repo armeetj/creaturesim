@@ -214,29 +214,55 @@ int main() {
     camera.offset = {(float)GetScreenWidth() / 2.0f,
                      (float)GetScreenHeight() / 2.0f};
 
-    // Smoother camera movement with exponential decay
-    const float smoothFactor = 0.01f;         // Adjust for more or less lag
-    const float CAMERA_SMALL_MOVE_THRES = 200; // largest number of pixels for small camera move
-    if (selectedCreature) {
-      Vector2 pos = selectedCreature->GetPosition();
-      float dx = pos.x - camera.target.x;
-      float dy = pos.y - camera.target.y;
+    // Calculate center of creatures
+    if (!creatures.empty()) {
+      float minX = creatures[0].GetPosition().x;
+      float maxX = minX;
+      float minY = creatures[0].GetPosition().y;
+      float maxY = minY;
+
+      for (const auto& creature : creatures) {
+        Vector2 pos = creature.GetPosition();
+        minX = std::min(minX, pos.x);
+        maxX = std::max(maxX, pos.x);
+        minY = std::min(minY, pos.y);
+        maxY = std::max(maxY, pos.y);
+      }
+
+      Vector2 centerPos = {
+        (minX + maxX) / 2.0f,
+        (minY + maxY) / 2.0f
+      };
+
+      // Smoother camera movement with exponential decay
+      const float smoothFactor = 0.01f;         // Adjust for more or less lag
+      const float CAMERA_SMALL_MOVE_THRES = 200; // largest number of pixels for small camera move
       
-      // Adjust for fullscreen
-      if (IsWindowFullscreen()) {
-        camera.target.x = pos.x;
-        camera.target.y = pos.y;
+      if (selectedCreature) {
+        Vector2 pos = selectedCreature->GetPosition();
+        float dx = pos.x - camera.target.x;
+        float dy = pos.y - camera.target.y;
+        
+        // Adjust for fullscreen
+        if (IsWindowFullscreen()) {
+          camera.target.x = centerPos.x;
+          camera.target.y = centerPos.y;
+        } else {
+          if (abs(dx) < CAMERA_SMALL_MOVE_THRES) {
+            camera.target.x += dx * smoothFactor * 0.1;
+          } else {
+            camera.target.x += dx * smoothFactor;
+          }
+          if (abs(dy) < CAMERA_SMALL_MOVE_THRES) {
+            camera.target.y += dy * smoothFactor * 0.1;
+          } else {
+            camera.target.y += dy * smoothFactor;
+          }
+        }
       } else {
-        if (abs(dx) < CAMERA_SMALL_MOVE_THRES) {
-          camera.target.x += dx * smoothFactor * 0.1;
-        } else {
-          camera.target.x += dx * smoothFactor;
-        }
-        if (abs(dy) < CAMERA_SMALL_MOVE_THRES) {
-          camera.target.y += dy * smoothFactor * 0.1;
-        } else {
-          camera.target.y += dy * smoothFactor;
-        }
+        // If no creature selected, center on the overall creature group
+        camera.target.x = centerPos.x;
+        camera.target.y = centerPos.y;
       }
     }
 
