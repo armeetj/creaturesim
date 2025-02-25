@@ -223,12 +223,21 @@ int main() {
       }
     }
 
+    // Track if user is manually panning
+    static bool isManualPan = false;
+
     // Pan with middle mouse button or left mouse button
     if (IsMouseButtonDown(MOUSE_BUTTON_MIDDLE) ||
         IsMouseButtonDown(MOUSE_BUTTON_LEFT)) {
       Vector2 delta = GetMouseDelta();
       camera.target.x -= (delta.x / camera.zoom);
       camera.target.y -= (delta.y / camera.zoom);
+      isManualPan = true;
+    }
+
+    // Reset manual pan when space is pressed
+    if (IsKeyPressed(KEY_SPACE)) {
+      isManualPan = false;
     }
 
     // Update camera offset based on current window size
@@ -236,7 +245,7 @@ int main() {
                      (float)GetScreenHeight() / 2.0f};
 
     // Calculate center of creatures
-    if (!creatures.empty()) {
+    if (!creatures.empty() && !isManualPan) {
       float minX = creatures[0].GetPosition().x;
       float maxX = minX;
       float minY = creatures[0].GetPosition().y;
@@ -258,12 +267,12 @@ int main() {
       // Smoother camera movement with exponential decay
       const float smoothFactor = 0.01f;         // Adjust for more or less lag
       const float CAMERA_SMALL_MOVE_THRES = 200; // largest number of pixels for small camera move
-      
+    
       if (selectedCreature) {
         Vector2 pos = selectedCreature->GetPosition();
         float dx = pos.x - camera.target.x;
         float dy = pos.y - camera.target.y;
-        
+      
         // Adjust for fullscreen
         if (IsWindowFullscreen()) {
           camera.target.x = centerPos.x;
