@@ -183,7 +183,7 @@ void Creature::Draw() const {
         default: stateText = "Unknown";
     }
     
-    DrawText(TextFormat("%s\n%s (%s)", name.c_str(), isMale ? "♂" : "♀", stateText),
+    DrawText(TextFormat("%s\n(%s)", name.c_str(), stateText),
              position.x - size, position.y - size - 40, 10, WHITE);
 
     // Draw creature body
@@ -201,13 +201,6 @@ void Creature::Draw() const {
     DrawText(TextFormat("E:%.0f", energy),
              position.x + size * 2 - 2, position.y - size - 10, 6, YELLOW);
 
-    // Draw attributes in smaller text with colors
-    DrawText(TextFormat("st:%.0f", strength),
-             position.x - size, position.y + size + 2, 4, ORANGE);
-    DrawText(TextFormat("sp:%.1f", speed),
-             position.x - size/2, position.y + size + 2, 4, SKYBLUE);
-    DrawText(TextFormat("mt:%.1f", metabolism),
-             position.x + size/2, position.y + size + 2, 4, GREEN);
     
     // Draw strength indicator (outline thickness)
     DrawPolyLines(position, isMale ? 3 : 6, size, rotation + 90.0f, 
@@ -216,5 +209,13 @@ void Creature::Draw() const {
     // Draw selection indicator
     if (selected) {
         DrawCircleLines(position.x, position.y, size * 1.5f, WHITE);
+
+        // Draw attributes in smaller text with colors
+        DrawText(TextFormat("st:%.0f", strength), position.x - size,
+                 position.y + size + 2, 1, ORANGE);
+        DrawText(TextFormat("\nsp:%.1f", speed), position.x - size,
+                 position.y + size + 2, 1, SKYBLUE);
+        DrawText(TextFormat("\n\nmt:%.1f", metabolism), position.x - size,
+                 position.y + size + 2, 1, GREEN);
     }
 }
