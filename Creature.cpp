@@ -222,8 +222,10 @@ void Creature::UpdateState(const std::vector<Creature>& others, std::vector<Food
 }
 
 void Creature::UpdateMovement(float deltaTime, const std::vector<Creature>& others) {
-    // Don't move while eating
-    if (state == CreatureState::EATING) {
+    // Don't move while eating, fighting, or mating
+    if (state == CreatureState::EATING || 
+        state == CreatureState::FIGHTING || 
+        state == CreatureState::MATING) {
         velocity = {0, 0};
         return;
     }
