@@ -386,19 +386,19 @@ void Creature::Draw(int rank, const std::vector<Creature>& allCreatures) const {
     
     // Draw health bar background and bar
     DrawRectangle(position.x - size, position.y - size - 10,
-                  size * 2, 4, ColorAlpha(RED, 0.2f));
+                  size * 2, 4, ColorAlpha(RED, anyCreatureSelected && !selected ? 0.1f : 0.2f));
     DrawRectangle(position.x - size, position.y - size - 10, 
-                  size * 2 * (health/100.0f), 4, ColorAlpha(RED, 0.8f));
+                  size * 2 * (health/100.0f), 4, ColorAlpha(RED, anyCreatureSelected && !selected ? 0.4f : 0.8f));
     DrawText(TextFormat("H:%.0f", health),
-             position.x - size - 35, position.y - size - 10, 6, ColorAlpha(RED, 0.8f));
+             position.x - size - 35, position.y - size - 10, 6, ColorAlpha(RED, anyCreatureSelected && !selected ? 0.2f : 0.8f));
     
     // Draw energy bar background and bar
     DrawRectangle(position.x - size, position.y - size - 6,
-                  size * 2, 4, ColorAlpha(YELLOW, 0.2f));
+                  size * 2, 4, ColorAlpha(YELLOW, anyCreatureSelected && !selected ? 0.1f : 0.2f));
     DrawRectangle(position.x - size, position.y - size - 6, 
-                  size * 2 * (energy/100.0f), 4, ColorAlpha(YELLOW, 0.8f));
+                  size * 2 * (energy/100.0f), 4, ColorAlpha(YELLOW, anyCreatureSelected && !selected ? 0.4f : 0.8f));
     DrawText(TextFormat("E:%.0f", energy),
-             position.x + size * 2 - 2, position.y - size - 10, 6, ColorAlpha(YELLOW, 0.8f));
+             position.x + size * 2 - 2, position.y - size - 10, 6, ColorAlpha(YELLOW, anyCreatureSelected && !selected ? 0.2f : 0.8f));
 
     
     // Draw strength indicator (outline thickness)
