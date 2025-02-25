@@ -220,15 +220,37 @@ void Creature::UpdateMovement(float deltaTime) {
         return;
     }
     
-    if (state != CreatureState::HUNTING) {
-        // Normal random movement
-        velocity.x += (float)GetRandomValue(-20, 20) / 100.0f;
-        velocity.y += (float)GetRandomValue(-20, 20) / 100.0f;
+    // Find the creature we're fighting or mating with
+    Creature* interactionPartner = nullptr;
+    for (auto& other : others) {
+        if (&other != this && (other.state == CreatureState::FIGHTING || other.state == CreatureState::MATING)) {
+            Vector2 otherPos = other.GetPosition();
+            float dx = position.x - otherPos.x;
+            float dy = position.y - otherPos.y;
+            float dist = sqrt(dx*dx + dy*dy);
+            
+            if (dist > size * 2) {
+                // Move closer to interaction partner
+                velocity.x = (otherPos.x - position.x) / dist * Constants::BASE_MOVEMENT_SPEED;
+                velocity.y = (otherPos.y - position.y) / dist * Constants::BASE_MOVEMENT_SPEED;
+                interactionPartner = &other;
+                break;
+            }
+        }
+    }
+    
+    // Normal movement if not in a specific interaction
+    if (interactionPartner == nullptr) {
+        if (state != CreatureState::HUNTING) {
+            // Normal random movement
+            velocity.x += (float)GetRandomValue(-20, 20) / 100.0f;
+            velocity.y += (float)GetRandomValue(-20, 20) / 100.0f;
+        }
     }
     
     // Limit velocity
     float speed = sqrt(velocity.x * velocity.x + velocity.y * velocity.y);
-    if (speed > Constants::MAX_VELOCITY) {
+    if (speed >  Constants::MAX_VELOCITY) {
         velocity.x = (velocity.x / speed) * Constants::MAX_VELOCITY;
         velocity.y = (velocity.y / speed) * Constants::MAX_VELOCITY;
     }
@@ -267,13 +289,13 @@ void Creature::UpdateColor() {
 
 Color Creature::GetStateColor() const {
     switch (state) {
-        case CreatureState::WANDERING: return GREEN;
-        case CreatureState::HUNTING: return RED;
+        case CreatureState::WANDERING: return GRAY;
+        case CreatureState::HUNTING: return GREEN;
         case CreatureState::MATING: return PINK;
         case CreatureState::SICK: return PURPLE;
         case CreatureState::EATING: return ORANGE;
-        case CreatureState::FIGHTING: return MAROON;
-        default: return WHITE;
+        case CreatureState::FIGHTING: return RED;
+        default: return GRAY;
     }
 }
 
