@@ -60,17 +60,11 @@ int main() {
         // Smooth zoom interpolation
         camera.zoom = Lerp(camera.zoom, targetZoom, 0.1f);
         
-        // Pan with middle mouse button or by holding Alt + left mouse button
-        if (IsMouseButtonDown(MOUSE_BUTTON_MIDDLE) || 
-            (IsKeyDown(KEY_LEFT_ALT) && IsMouseButtonDown(MOUSE_BUTTON_LEFT))) {
+        // Pan with middle mouse button or by dragging with left mouse button
+        if (IsMouseButtonDown(MOUSE_BUTTON_LEFT)) {
             Vector2 delta = GetMouseDelta();
             camera.target.x -= (delta.x / camera.zoom);
             camera.target.y -= (delta.y / camera.zoom);
-            
-            // Keep camera within world bounds with some margin
-            float margin = 100.0f;
-            camera.target.x = Clamp(camera.target.x, -margin, screenWidth + margin);
-            camera.target.y = Clamp(camera.target.y, -margin, screenHeight + margin);
         }
 
         accumulator += GetFrameTime();
