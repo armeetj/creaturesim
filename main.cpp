@@ -70,6 +70,12 @@ int main() {
     }
 
     if (IsKeyPressed(KEY_SPACE)) {
+      // Deselect any currently selected creature
+      if (selectedCreature) {
+        selectedCreature->SetSelected(false);
+        selectedCreature = nullptr;
+      }
+
       // Calculate center of creatures' boundary
       if (!creatures.empty()) {
         float minX = creatures[0].GetPosition().x;
