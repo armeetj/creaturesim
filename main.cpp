@@ -54,19 +54,11 @@ int main() {
     }
 
     while (!WindowShouldClose()) {
-        // Toggle fullscreen with F11 or F
-        static bool wasFullscreen = false;
-        if (IsKeyPressed(KEY_F11) || IsKeyPressed(KEY_F)) {
-            if (IsWindowFullscreen()) {
-                ToggleFullscreen();
-                wasFullscreen = false;
-            } else {
-                ToggleFullscreen();
-                wasFullscreen = true;
-            }
+        // Handle keyboard input
+        if (IsKeyPressed(KEY_F)) {
+            ToggleFullscreen();
         }
 
-        // Reset view with spacebar
         if (IsKeyPressed(KEY_SPACE)) {
             camera.target = {0, 0};
             camera.zoom = 1.0f;
