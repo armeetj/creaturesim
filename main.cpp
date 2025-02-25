@@ -25,10 +25,10 @@ int main() {
 
     // Initialize camera
     Camera2D camera = {
-        {screenWidth/2.0f, screenHeight/2.0f},  // offset
-        {screenWidth/2.0f, screenHeight/2.0f},  // target
-        0.0f,                                   // rotation
-        1.0f                                    // zoom
+        {(float)screenWidth/2.0f, (float)screenHeight/2.0f},  // offset
+        {0, 0},  // target (will be updated to follow creature)
+        0.0f,    // rotation
+        1.0f     // zoom
     };
     
     Creature* selectedCreature = nullptr;
@@ -102,8 +102,14 @@ int main() {
         // Update camera to follow selected creature
         if (selectedCreature) {
             Vector2 pos = selectedCreature->GetPosition();
-            camera.target.x = Lerp(camera.target.x, pos.x, 0.1f);
-            camera.target.y = Lerp(camera.target.y, pos.y, 0.1f);
+            // Smoother camera following with variable speed based on distance
+            float dx = pos.x - camera.target.x;
+            float dy = pos.y - camera.target.y;
+            float dist = sqrt(dx*dx + dy*dy);
+            float speed = Clamp(dist / 500.0f, 0.02f, 0.1f);  // Faster when far, slower when close
+            
+            camera.target.x = Lerp(camera.target.x, pos.x, speed);
+            camera.target.y = Lerp(camera.target.y, pos.y, speed);
         }
 
         accumulator += GetFrameTime();
