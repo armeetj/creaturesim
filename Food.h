@@ -1,5 +1,6 @@
 #pragma once
 #include "raylib.h"
+#include "Constants.h"
 
 class Food {
 public:
@@ -10,7 +11,7 @@ public:
     void Consume() { consumed = true; }
 
 public:
-    static constexpr float SIZE = Constants::INITIAL_CREATURE_SIZE * 0.6f; // Make food slightly bigger
+    static constexpr float SIZE = 6.0f; // Make food slightly bigger
 
 private:
     Vector2 position;
