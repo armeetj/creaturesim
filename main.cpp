@@ -116,9 +116,9 @@ int main() {
             ClearBackground(BLACK);
             BeginMode2D(camera);
             
-            // Draw world border
+            // Draw world border using current window size
             DrawRectangleLinesEx(
-                Rectangle{0, 0, (float)screenWidth, (float)screenHeight},
+                Rectangle{0, 0, (float)GetScreenWidth(), (float)GetScreenHeight()},
                 2,  // line thickness
                 ColorAlpha(LIGHTGRAY, 0.5f)  // semi-transparent light gray
             );

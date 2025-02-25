@@ -140,16 +140,16 @@ void Creature::UpdateMovement(float deltaTime) {
         position.x = 0;
         velocity.x *= Constants::BOUNDARY_BOUNCE;
     }
-    if (position.x > GetScreenWidth()) {
-        position.x = GetScreenWidth();
+    if (position.x > GetScreenWidth() - size) {
+        position.x = GetScreenWidth() - size;
         velocity.x *= -0.8f;
     }
     if (position.y < 0) {
         position.y = 0;
         velocity.y *= -0.8f;
     }
-    if (position.y > GetScreenHeight()) {
-        position.y = GetScreenHeight();
+    if (position.y > GetScreenHeight() - size) {
+        position.y = GetScreenHeight() - size;
         velocity.y *= -0.8f;
     }
 }
