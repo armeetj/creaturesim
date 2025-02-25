@@ -25,7 +25,7 @@ namespace Constants {
     constexpr float FOOD_SEEK_FORCE = 0.5f;
     
     // Energy & Health
-    constexpr float ENERGY_CONSUMPTION_RATE = 2.0f;
+    constexpr float ENERGY_CONSUMPTION_RATE = 0.5f;
     constexpr float HEALTH_DECAY_RATE = 5.0f;
     constexpr float FOOD_ENERGY_VALUE = 30.0f;
     
