@@ -12,7 +12,7 @@ Creature::Creature(Vector2 pos, float size)
     , color(GREEN)
     , isMale(GetRandomValue(0, 1) == 1)
     , strength(GetRandomValue(40, 100))
-    , speed((float)GetRandomValue(50, 150) / 100.0f)
+    , speed((float)GetRandomValue(50, 120) / 100.0f) // Cap max speed at 1.2
     , metabolism((float)GetRandomValue(50, 150) / 100.0f) {
 }
 
@@ -50,22 +50,34 @@ void Creature::Update(float deltaTime, const std::vector<Creature>& others, std:
 }
 
 void Creature::UpdateState(const std::vector<Creature>& others) {
-    // Simple state machine
-    if (energy < 30) {
+    // Priority-based state machine
+    if (energy < 30 || state == CreatureState::EATING) {
+        // Eating is highest priority when hungry
         state = CreatureState::HUNTING;
-    } else if (health < 50) {
+    } else if (health < 40) {
+        // Very low health is an emergency
         state = CreatureState::SICK;
-    } else if (energy > 80 && age > 10) {
+    } else if (energy > 60 && age > 10) {
+        // Mating is high priority when healthy and mature
         state = CreatureState::MATING;
+    } else if (health < 70) {
+        // Rest when somewhat injured
+        state = CreatureState::SICK;
     } else {
         state = CreatureState::WANDERING;
     }
 }
 
 void Creature::UpdateMovement(float deltaTime) {
-    // Add random movement
-    velocity.x += (float)GetRandomValue(-20, 20) / 100.0f;
-    velocity.y += (float)GetRandomValue(-20, 20) / 100.0f;
+    if (state == CreatureState::HUNTING) {
+        // More directed movement when hunting
+        velocity.x += (float)GetRandomValue(-10, 10) / 100.0f;
+        velocity.y += (float)GetRandomValue(-10, 10) / 100.0f;
+    } else {
+        // Normal random movement
+        velocity.x += (float)GetRandomValue(-20, 20) / 100.0f;
+        velocity.y += (float)GetRandomValue(-20, 20) / 100.0f;
+    }
     
     // Limit velocity
     float speed = sqrt(velocity.x * velocity.x + velocity.y * velocity.y);
