@@ -3,11 +3,13 @@
 ## Overview
 This project simulates creatures in a 2D environment where they move, eat, fight, mate, and interact with each other based on predefined rules. The simulation models simple behaviors such as wandering, hunting, and responding to external stimuli like food, other creatures, and their energy levels.
 
+https://github.com/user-attachments/assets/3bc1c11c-8ef3-4d23-9972-3ff6830b724c
 
-https://github.com/user-attachments/assets/06dbd380-469c-4b47-b0e8-cd37e8c55a86
 
-I didn't spend too much time balancing environment parameters, as the system is pretty volatile, so the population quickly balloons out of control.
-The low bitrate also ruins the quality, so I'd recommend just building for yourself. It's very easy: install raylib, and then run make run.
+HD video: https://youtu.be/smVHQpItEno
+
+I didn't spend too much time balancing environment parameters, as the system is pretty volatile. The creatures aren't very smart either, so they're almost always certain to go extinct.
+To play yourself, it's quite easy: install raylib (on mac this is as simple as `brew install raylib`), and then run `make run`.
 
 
 ## Features
