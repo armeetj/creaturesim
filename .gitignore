@@ -1,1 +1,44 @@
+# IDE and Editor Files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Build Directories
+build/
+obj/
+bin/
+dist/
+
+# Compiled Object files
+*.slo
+*.lo
+*.o
+*.obj
+
+# Compiled Dynamic libraries
+*.so
+*.dylib
+*.dll
+
+# Compiled Static libraries
+*.lai
+*.la
+*.a
+*.lib
+
+# Executables
+*.exe
+*.out
+*.app
+game
+
+# Debug files
+*.dSYM/
+
+# Project specific
 .aider*
+.cache/
+compile_commands.json
+
