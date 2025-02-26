@@ -3,8 +3,7 @@
 ## Overview
 This project simulates creatures in a 2D environment where they move, eat, fight, mate, and interact with each other based on predefined rules. The simulation models simple behaviors such as wandering, hunting, and responding to external stimuli like food, other creatures, and their energy levels.
 
-https://github.com/user-attachments/assets/3bc1c11c-8ef3-4d23-9972-3ff6830b724c
-
+https://github.com/user-attachments/assets/452fad75-298b-4dee-a24f-70bd927862b4
 
 HD video: https://youtu.be/smVHQpItEno
 
