@@ -1,11 +1,8 @@
-#include "Constants.h"
-#include "Creature.h"
-#include "Food.h"
-#include "raylib.h"
-#include "../include/names.h"
 #include <cmath>
-#include <string>
-#include <vector>
+#include "constants.h"
+#include "creature.h"
+#include "food.h"
+#include "raylib.h"
 
 float simulationSpeed = 1.0f; // Global simulation speed multiplier
 

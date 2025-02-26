@@ -1,18 +1,22 @@
 #pragma once
-#include "Food.h"
-#include "../include/names.h"
+#include "food.h"
 #include "raylib.h"
-#include <string>
 #include <vector>
 
-enum class CreatureState { WANDERING, HUNTING, MATING, FIGHTING, EATING, SICK };
+enum class CreatureState {
+  WANDERING,
+  HUNTING,
+  MATING,
+  FIGHTING,
+  EATING,
+  SICK,
+};
 
 class Creature {
 public:
   Creature(Vector2 pos, float size);
-
   void Update(float deltaTime, const std::vector<Creature> &others,
-              std::vector<Food> &foods, std::vector<Creature> &allCreatures);
+              std::vector<Food> &foods, std::vector<Creature> &allCreatures );
   void Draw(int rank = 0, const std::vector<Creature> &allCreatures =
                               std::vector<Creature>()) const;
   bool IsAlive() const { return health > 0; }

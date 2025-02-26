@@ -1,8 +1,7 @@
-#include "Creature.h"
+#include "creature.h"
+#include "constants.h"
+#include "names.h"
 #include <cmath>
-
-#include "Constants.h"
-// No changes needed to implementation
 
 Creature::Creature(Vector2 pos, float size)
     : position(pos), velocity({0, 0}), rotation(0.0f), size(size),
@@ -18,7 +17,6 @@ Creature::Creature(Vector2 pos, float size)
                                        Constants::MAX_METABOLISM * 100) /
                  100.0f) {}
 
-// Helper function
 float Clamp(float value, float min, float max) {
   if (value < min)
     return min;
@@ -109,7 +107,7 @@ void Creature::UpdateState(const std::vector<Creature> &others,
     // Stay in eating state for a very short duration
     static float eatTimer = 0;
     eatTimer += GetFrameTime();
-    if (eatTimer > 0.2f) { // Reduced from 1.0f to 0.2f
+    if (eatTimer > 0.1f) { // Reduced from 1.0f to 0.2f
       eatTimer = 0;
       state = CreatureState::WANDERING;
     }
